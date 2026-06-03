@@ -30,6 +30,15 @@ import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
+/**
+ * Handles core user authentication workflows including registration, login, token refresh, and logout operations.
+ * 
+ * Key Responsibilities:
+ * - Issues and rotates JWT access and refresh tokens.
+ * - Tracks user device sessions (IP, User Agent) for security monitoring.
+ * - Enforces account status checks and password validation using Argon2id.
+ * - Writes to the AuditLog for all critical security events (login success/fail, registration, logout).
+ */
 @Service
 public class AuthService {
 
@@ -62,6 +71,15 @@ public class AuthService {
         this.auditLogService = auditLogService;
     }
 
+    /**
+     * Registers a new user on the platform.
+     * 
+     * Process:
+     * 1. Checks for duplicate email or username.
+     * 2. Hashes the password via Argon2id.
+     * 3. Creates the base UserEntity and an initial empty ProfileEntity.
+     * 4. Logs the registration event and issues the first session tokens.
+     */
     @Transactional(isolation = Isolation.REPEATABLE_READ)
     public AuthResponse register(RegisterRequest request, ClientContext clientContext) {
         if (userRepository.existsByEmailIgnoreCase(request.email())) {
@@ -88,6 +106,16 @@ public class AuthService {
         return issueSession(user, clientContext, null);
     }
 
+    /**
+     * Authenticates a user based on their email and password.
+     * 
+     * Process:
+     * 1. Retrieves user by normalized email.
+     * 2. Validates password against the stored Argon2 hash.
+     * 3. Checks if the account is ACTIVE and not soft-deleted.
+     * 4. Logs the login attempt (success or failure).
+     * 5. Issues new JWTs and tracks the device session.
+     */
     @Transactional
     public AuthResponse login(LoginRequest request, ClientContext clientContext) {
         UserEntity user =
@@ -117,6 +145,14 @@ public class AuthService {
         return issueSession(user, clientContext, null);
     }
 
+    /**
+     * Rotates a refresh token to generate a new pair of Access and Refresh tokens.
+     * 
+     * Security mechanism (Refresh Token Rotation):
+     * - The provided refresh token is hashed and looked up in the database.
+     * - If it is expired or already revoked (e.g., token reuse attack), access is denied.
+     * - If valid, the old token is revoked immediately, and a new session is issued tying to the existing device context.
+     */
     @Transactional
     public AuthResponse refresh(String refreshTokenRaw, ClientContext clientContext) {
         RefreshTokenEntity existingToken =
@@ -148,6 +184,11 @@ public class AuthService {
         return issueSession(existingToken.getUser(), clientContext, existingSession);
     }
 
+    /**
+     * Logs out a specific device session by revoking its refresh token.
+     * - Finds the hashed token in the database.
+     * - Marks it and its associated device session as revoked (soft-delete style).
+     */
     @Transactional
     public void logout(String refreshTokenRaw) {
         if (refreshTokenRaw == null || refreshTokenRaw.isBlank()) {
@@ -176,6 +217,10 @@ public class AuthService {
                         });
     }
 
+    /**
+     * "Panic button" logout. Invalidates ALL active refresh tokens and device sessions for a user.
+     * Used when an account is suspected to be compromised or during password resets.
+     */
     @Transactional
     public void logoutAll(UUID userId) {
         Instant now = Instant.now();
@@ -196,6 +241,11 @@ public class AuthService {
         auditLogService.logEvent(userId, "AUTH_LOGOUT_ALL", "USER", userId.toString());
     }
 
+    /**
+     * Core session generator. 
+     * Creates a short-lived JWT Access Token and a long-lived opaque Refresh Token.
+     * The refresh token is securely hashed before storage (like a password) to mitigate database leaks.
+     */
     private AuthResponse issueSession(
             UserEntity user, ClientContext clientContext, DeviceSessionEntity existingSession) {
         String accessToken = jwtService.issueAccessToken(user.getId(), user.getEmail(), user.getUsername());

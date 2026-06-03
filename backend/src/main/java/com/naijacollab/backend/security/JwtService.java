@@ -12,6 +12,13 @@ import java.util.UUID;
 import javax.crypto.SecretKey;
 import org.springframework.stereotype.Service;
 
+/**
+ * Service responsible for creating and validating JSON Web Tokens (JWT).
+ * 
+ * We use symmetric encryption (HMAC-SHA256) where the secret key is securely
+ * injected from the environment properties. The tokens are stateless and self-contained,
+ * meaning we don't need to hit the database to authenticate a request once a valid JWT is provided.
+ */
 @Service
 public class JwtService {
 
@@ -25,6 +32,14 @@ public class JwtService {
                         securityProperties.getJwtSecret().getBytes(StandardCharsets.UTF_8));
     }
 
+    /**
+     * Issues a short-lived access token for a user.
+     * 
+     * @param userId The unique ID of the user (Subject)
+     * @param email The user's email (stored as a claim)
+     * @param username The user's username (stored as a claim)
+     * @return A signed JWT string
+     */
     public String issueAccessToken(UUID userId, String email, String username) {
         Instant now = Instant.now();
         Instant expiresAt = now.plus(securityProperties.getAccessTokenTtl());
@@ -39,6 +54,17 @@ public class JwtService {
                 .compact();
     }
 
+    /**
+     * Parses and validates a JWT string.
+     * 
+     * Security checks performed automatically by JJWT:
+     * - Signature verification (fails if token was tampered with).
+     * - Expiration check (fails if current time > expiresAt).
+     * - Issuer check (fails if the token wasn't issued by our trusted server).
+     * 
+     * @param token The raw JWT string from the Authorization header.
+     * @return Optional containing the extracted principal data, or empty if invalid.
+     */
     public Optional<AuthenticatedPrincipal> parseAccessToken(String token) {
         try {
             Claims claims =
