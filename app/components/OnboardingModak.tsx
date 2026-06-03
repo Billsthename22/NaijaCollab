@@ -10,11 +10,74 @@ type Props = {
   onSubmit: (data: { role: string; location: string }) => void;
 };
 
+// Grouped taxonomy from your list for clean grid rendering
 const roles = [
-  { id: "Artist", label: "Visual Artist", icon: "🎨" },
-  { id: "Producer", label: "Sound Producer", icon: "🎹" },
-  { id: "Designer", label: "UI/UX Designer", icon: "📐" },
-  { id: "Developer", label: "Software Arch", icon: "💻" },
+  { 
+    id: "Visual Creatives", 
+    label: "Visual & Design", 
+    icon: "🎨",
+    subRoles: ["Graphic Designers", "UI/UX Designers", "Illustrators", "Painters", "Digital Artists", "Animators", "3D Artists", "Motion Designers", "Photographers", "Photo Editors/Retouchers", "Cinematographers", "Videographers", "Video Editors", "VFX Artists", "Art Directors", "Creative Directors"]
+  },
+  { 
+    id: "Music & Audio", 
+    label: "Music & Audio", 
+    icon: "🎹",
+    subRoles: ["Singers/Vocalists", "Rappers", "Songwriters", "Music Producers", "Beat Makers", "Composers", "Instrumentalists", "Sound Engineers", "DJs", "Podcasters", "Voice-over Artists"]
+  },
+  { 
+    id: "Writing & Storytelling", 
+    label: "Writing & Stories", 
+    icon: "✍️",
+    subRoles: ["Authors", "Poets", "Screenwriters", "Scriptwriters", "Copywriters", "Bloggers", "Journalists", "Content Writers", "Technical Writers", "Editors", "Storyboard Artists"]
+  },
+  { 
+    id: "Fashion & Beauty", 
+    label: "Fashion & Beauty", 
+    icon: "✂️",
+    subRoles: ["Fashion Designers", "Stylists", "Makeup Artists", "Hair Stylists", "Nail Artists", "Jewelry Designers", "Textile Designers", "Costume Designers", "Fashion Photographers", "Models"]
+  },
+  { 
+    id: "Performance Creatives", 
+    label: "Performance Arts", 
+    icon: "🎭",
+    subRoles: ["Actors", "Dancers", "Choreographers", "Comedians", "Spoken Word Artists", "Theatre Performers", "Magicians", "Hosts/Presenters", "Streamers"]
+  },
+  { 
+    id: "Tech & Digital", 
+    label: "Tech & Digital", 
+    icon: "💻",
+    subRoles: ["Web Designers", "Front-end Developers", "Creative Developers", "Game Designers", "Game Artists", "Level Designers", "AR/VR Creatives", "App Designers", "Product Designers"]
+  },
+  { 
+    id: "Social & Content", 
+    label: "Content & Social", 
+    icon: "📱",
+    subRoles: ["Content Creators", "YouTubers", "TikTok Creators", "Influencers", "Streamers", "Meme Creators", "Social Media Managers", "Brand Strategists", "Community Managers"]
+  },
+  { 
+    id: "Business & Brand", 
+    label: "Brand & Business", 
+    icon: "💼",
+    subRoles: ["Brand Designers", "Marketing Creatives", "Advertising Creatives", "Creative Strategists", "Event Designers", "Experience Designers"]
+  },
+  { 
+    id: "Craft & Handmade", 
+    label: "Craft & Handmade", 
+    icon: "🪵",
+    subRoles: ["Sculptors", "Potters", "Woodworkers", "Leatherworkers", "Calligraphers", "Candle Makers", "Resin Artists", "Floral Designers", "Interior Decorators"]
+  },
+  { 
+    id: "Architecture & Space", 
+    label: "Spatial Design", 
+    icon: "🏛️",
+    subRoles: ["Architects", "Interior Designers", "Landscape Designers", "Set Designers", "Exhibition Designers"]
+  },
+  { 
+    id: "Emerging & Modern", 
+    label: "Emerging Tech/Web3", 
+    icon: "🚀",
+    subRoles: ["AI Artists", "NFT Artists", "Virtual Influencers", "Prompt Designers", "Digital Collectible Creators", "Creative Technologists", "Metaverse Designers"]
+  }
 ];
 
 export default function OnboardingModal({ isOpen, onClose, onSubmit }: Props) {
@@ -39,12 +102,12 @@ export default function OnboardingModal({ isOpen, onClose, onSubmit }: Props) {
             initial={{ opacity: 0, scale: 0.9, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.9, y: 20 }}
-            className="relative z-10 w-full max-w-lg overflow-hidden rounded-[32px] bg-[#0d0f0d] border border-emerald-900/20 shadow-[0_0_50px_rgba(0,0,0,0.5)]"
+            className="relative z-10 w-full max-w-xl overflow-hidden rounded-[32px] bg-[#0d0f0d] border border-emerald-900/20 shadow-[0_0_50px_rgba(0,0,0,0.5)]"
           >
             {/* Top Tactical Bar */}
             <div className="h-1 w-full bg-gradient-to-r from-transparent via-emerald-500 to-transparent opacity-50" />
             
-            <div className="p-8 sm:p-10">
+            <div className="p-8 sm:p-10 max-h-[90vh] overflow-y-auto no-scrollbar">
               <div className="flex justify-between items-start mb-8">
                 <div>
                   <div className="flex items-center gap-2 text-emerald-500 text-[10px] font-black uppercase tracking-[0.3em] mb-2">
@@ -57,7 +120,7 @@ export default function OnboardingModal({ isOpen, onClose, onSubmit }: Props) {
                 </div>
                 <button 
                   onClick={onClose}
-                  className="p-2 rounded-full bg-zinc-900 text-zinc-500 hover:text-white transition-colors"
+                  className="p-2 rounded-full bg-zinc-900 text-zinc-500 hover:text-white transition-colors flex-shrink-0"
                 >
                   <X size={20} />
                 </button>
@@ -70,10 +133,12 @@ export default function OnboardingModal({ isOpen, onClose, onSubmit }: Props) {
                     <Target size={12} className="text-emerald-900" />
                     Target Specialization
                   </label>
-                  <div className="grid grid-cols-2 gap-3">
+                  {/* Grid layout for your updated list. Max height added to keep things perfectly proportioned. */}
+                  <div className="grid grid-cols-2 gap-3 max-h-[280px] overflow-y-auto pr-1 border-b border-zinc-900/50 pb-4 scrollbar-thin scrollbar-thumb-zinc-800">
                     {roles.map((item) => (
                       <button
                         key={item.id}
+                        type="button"
                         onClick={() => setRole(item.id)}
                         className={`group relative flex flex-col items-start p-4 rounded-2xl border transition-all duration-300 ${
                           role === item.id
@@ -82,7 +147,7 @@ export default function OnboardingModal({ isOpen, onClose, onSubmit }: Props) {
                         }`}
                       >
                         <span className="text-xl mb-2 group-hover:scale-110 transition-transform">{item.icon}</span>
-                        <span className={`text-xs font-bold uppercase tracking-tight ${role === item.id ? "text-white" : "text-zinc-500"}`}>
+                        <span className={`text-xs font-bold uppercase tracking-tight text-left ${role === item.id ? "text-white" : "text-zinc-500"}`}>
                           {item.label}
                         </span>
                         {role === item.id && (
@@ -112,8 +177,9 @@ export default function OnboardingModal({ isOpen, onClose, onSubmit }: Props) {
               </div>
 
               {/* Action Footer */}
-              <div className="mt-12 flex items-center justify-between gap-6">
+              <div className="mt-10 flex items-center justify-between gap-6">
                 <button
+                  type="button"
                   onClick={onClose}
                   className="text-xs font-bold text-zinc-600 hover:text-zinc-400 uppercase tracking-[0.2em] transition-colors"
                 >
@@ -121,6 +187,7 @@ export default function OnboardingModal({ isOpen, onClose, onSubmit }: Props) {
                 </button>
 
                 <button
+                  type="button"
                   onClick={() => onSubmit({ role, location })}
                   disabled={!role}
                   className="relative group flex items-center gap-3 px-8 py-4 bg-emerald-500 disabled:bg-zinc-800 text-black disabled:text-zinc-600 rounded-2xl text-xs font-black uppercase tracking-[0.2em] transition-all hover:bg-emerald-400 active:scale-95 overflow-hidden"

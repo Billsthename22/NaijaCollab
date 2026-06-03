@@ -1,33 +1,102 @@
 "use client";
- 
+
+import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { X, Target, MapPin, Zap, Sparkles } from "lucide-react";
- 
-// ─── ONBOARDING MODAL ────────────────────────────────────────────────────────
- 
-const ONBOARDING_ROLES = [
-  { id: "Artist", label: "Visual Artist", icon: "🎨" },
-  { id: "Producer", label: "Sound Producer", icon: "🎹" },
-  { id: "Designer", label: "UI/UX Designer", icon: "📐" },
-  { id: "Developer", label: "Software Dev", icon: "💻" },
-  { id: "Photographer", label: "Photographer", icon: "📸" },
-  { id: "Videographer", label: "Videographer", icon: "🎬" },
+import { Sparkles, X, Target, MapPin, Zap } from "lucide-react";
+
+const ONBOARDING_SECTORS = [
+  { 
+    id: "visual", 
+    label: "Visual & Design", 
+    icon: "🎨",
+    roles: ["Graphic Designer", "UI/UX Designer", "Illustrator", "Painter", "Digital Artist", "Animator", "3D Artist", "Motion Designer", "Photographer", "Photo Editor/Retoucher", "Cinematographer", "Videographer", "Video Editor", "VFX Artist", "Art Director", "Creative Director"]
+  },
+  { 
+    id: "audio", 
+    label: "Music & Audio", 
+    icon: "🎹",
+    roles: ["Singer/Vocalist", "Rapper", "Songwriter", "Music Producer", "Beat Maker", "Composer", "Instrumentalist", "Sound Engineer", "DJ", "Podcaster", "Voice-over Artist"]
+  },
+  { 
+    id: "writing", 
+    label: "Writing & Stories", 
+    icon: "✍️",
+    roles: ["Author", "Poet", "Screenwriter", "Scriptwriter", "Copywriter", "Blogger", "Journalist", "Content Writer", "Technical Writer", "Editor", "Storyboard Artist"]
+  },
+  { 
+    id: "fashion", 
+    label: "Fashion & Beauty", 
+    icon: "✂️",
+    roles: ["Fashion Designer", "Stylist", "Makeup Artist", "Hair Stylist", "Nail Artist", "Jewelry Designer", "Textile Designer", "Costume Designer", "Fashion Photographer", "Model"]
+  },
+  { 
+    id: "performance", 
+    label: "Performance Arts", 
+    icon: "🎭",
+    roles: ["Actor", "Dancer", "Choreographer", "Comedian", "Spoken Word Artist", "Theatre Performer", "Magician", "Host/Presenter", "Streamer"]
+  },
+  { 
+    id: "tech", 
+    label: "Tech & Digital", 
+    icon: "💻",
+    roles: ["Web Designer", "Front-end Developer", "Creative Developer", "Game Designer", "Game Artist", "Level Designer", "AR/VR Creative", "App Designer", "Product Designer"]
+  },
+  { 
+    id: "social", 
+    label: "Content & Social", 
+    icon: "📱",
+    roles: ["Content Creator", "YouTuber", "TikTok Creator", "Influencer", "Streamer", "Meme Creator", "Social Media Manager", "Brand Strategist", "Community Manager"]
+  },
+  { 
+    id: "business", 
+    label: "Brand & Business", 
+    icon: "💼",
+    roles: ["Brand Designer", "Marketing Creative", "Advertising Creative", "Creative Strategist", "Event Designer", "Experience Designer"]
+  },
+  { 
+    id: "craft", 
+    label: "Craft & Handmade", 
+    icon: "🪵",
+    roles: ["Sculptor", "Potter", "Woodworker", "Leatherworker", "Calligrapher", "Candle Maker", "Resin Artist", "Floral Designer", "Interior Decorator"]
+  },
+  { 
+    id: "spatial", 
+    label: "Spatial Design", 
+    icon: "🏛️",
+    roles: ["Architect", "Interior Designer", "Landscape Designer", "Set Designer", "Exhibition Designer"]
+  },
+  { 
+    id: "emerging", 
+    label: "Emerging Tech", 
+    icon: "🚀",
+    roles: ["AI Artist", "NFT Artist", "Virtual Influencer", "Prompt Designer", "Digital Collectible Creator", "Creative Technologist", "Metaverse Designer"]
+  }
 ];
- 
-function OnboardingModal({
-  isOpen,
-  onClose,
-  onSubmit,
-}: {
+
+interface OnboardingModalProps {
   isOpen: boolean;
   onClose: () => void;
   onSubmit: (data: { role: string; location: string }) => void;
-}) {
-  const [role, setRole] = useState("");
+}
+
+export function OnboardingModal({ isOpen, onClose, onSubmit }: OnboardingModalProps) {
+  const [selectedSector, setSelectedSector] = useState<string>("");
+  const [specificRole, setSpecificRole] = useState<string>("");
   const [location, setLocation] = useState("");
- 
+
+  const activeSectorData = ONBOARDING_SECTORS.find(s => s.id === selectedSector);
+
+  const handleSectorChange = (sectorId: string) => {
+    setSelectedSector(sectorId);
+    setSpecificRole(""); 
+  };
+
+  const handleFormSubmit = () => {
+    if (!specificRole) return;
+    onSubmit({ role: specificRole, location });
+  };
+
   return (
     <AnimatePresence>
       {isOpen && (
@@ -41,15 +110,17 @@ function OnboardingModal({
             style={{ position: "absolute", inset: 0, background: "rgba(0,0,0,0.85)", backdropFilter: "blur(12px)" }}
           />
  
-          {/* Modal */}
+          {/* Modal Container */}
           <motion.div
             initial={{ opacity: 0, scale: 0.92, y: 24 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.92, y: 24 }}
             transition={{ type: "spring", stiffness: 300, damping: 28 }}
             style={{
-              position: "relative", zIndex: 10,
-              width: "100%", maxWidth: 520,
+              position: "relative", 
+              zIndex: 10,
+              width: "100%", 
+              maxWidth: 540,
               background: "#0d0f0d",
               border: "1px solid rgba(34,197,94,0.15)",
               borderRadius: 28,
@@ -64,7 +135,7 @@ function OnboardingModal({
             <div style={{ position: "absolute", top: 10, left: 10, width: 16, height: 16, borderTop: "2px solid rgba(34,197,94,0.25)", borderLeft: "2px solid rgba(34,197,94,0.25)", borderRadius: "4px 0 0 0", pointerEvents: "none" }} />
             <div style={{ position: "absolute", bottom: 10, right: 10, width: 16, height: 16, borderBottom: "2px solid rgba(34,197,94,0.25)", borderRight: "2px solid rgba(34,197,94,0.25)", borderRadius: "0 0 4px 0", pointerEvents: "none" }} />
  
-            <div style={{ padding: "2.5rem 2.5rem 2rem" }}>
+            <div style={{ padding: "2.5rem 2.5rem 2rem", maxHeight: "90vh", overflowY: "auto" }}>
               {/* Header */}
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "2rem" }}>
                 <div>
@@ -77,6 +148,7 @@ function OnboardingModal({
                   </h2>
                 </div>
                 <button
+                  type="button"
                   onClick={onClose}
                   style={{ padding: "0.5rem", borderRadius: "50%", background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.08)", color: "rgba(240,237,230,0.4)", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", transition: "color 0.2s, background 0.2s" }}
                   onMouseEnter={e => { e.currentTarget.style.color = "#F0EDE6"; e.currentTarget.style.background = "rgba(255,255,255,0.1)"; }}
@@ -86,42 +158,82 @@ function OnboardingModal({
                 </button>
               </div>
  
-              {/* Role picker */}
-              <div style={{ marginBottom: "1.75rem" }}>
+              {/* Core Sector Selection Matrix */}
+              <div style={{ marginBottom: "1.5rem" }}>
                 <label style={{ display: "flex", alignItems: "center", gap: 6, fontSize: "0.65rem", fontWeight: 700, letterSpacing: "0.2em", textTransform: "uppercase", color: "rgba(240,237,230,0.3)", marginBottom: "0.85rem" }}>
                   <Target size={11} style={{ color: "#22C55E" }} />
-                  Your Specialization
+                  Your Creative Eco-System
                 </label>
-                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: "0.6rem" }}>
-                  {ONBOARDING_ROLES.map((item) => (
+                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: "0.5rem", maxHeight: "200px", overflowY: "auto", paddingRight: "4px" }}>
+                  {ONBOARDING_SECTORS.map((item) => (
                     <motion.button
                       key={item.id}
-                      whileHover={{ scale: 1.03 }}
-                      whileTap={{ scale: 0.97 }}
-                      onClick={() => setRole(item.id)}
+                      type="button"
+                      whileHover={{ scale: 1.02 }}
+                      whileTap={{ scale: 0.98 }}
+                      onClick={() => handleSectorChange(item.id)}
                       style={{
                         position: "relative",
                         display: "flex", flexDirection: "column", alignItems: "flex-start",
-                        padding: "0.85rem 0.85rem",
+                        padding: "0.75rem",
                         borderRadius: 12,
-                        background: role === item.id ? "rgba(34,197,94,0.1)" : "rgba(255,255,255,0.03)",
-                        border: `1px solid ${role === item.id ? "rgba(34,197,94,0.5)" : "rgba(255,255,255,0.07)"}`,
+                        background: selectedSector === item.id ? "rgba(34,197,94,0.1)" : "rgba(255,255,255,0.03)",
+                        border: `1px solid ${selectedSector === item.id ? "rgba(34,197,94,0.5)" : "rgba(255,255,255,0.07)"}`,
                         cursor: "pointer",
                         transition: "all 0.2s",
-                        boxShadow: role === item.id ? "0 0 16px rgba(34,197,94,0.1)" : "none",
+                        boxShadow: selectedSector === item.id ? "0 0 16px rgba(34,197,94,0.1)" : "none",
                         textAlign: "left",
                       }}
                     >
-                      <span style={{ fontSize: "1.1rem", marginBottom: "0.4rem" }}>{item.icon}</span>
-                      <span style={{ fontSize: "0.72rem", fontWeight: role === item.id ? 600 : 400, color: role === item.id ? "#22C55E" : "rgba(240,237,230,0.45)", lineHeight: 1.3, fontFamily: "'DM Sans', sans-serif" }}>
+                      <span style={{ fontSize: "1.1rem", marginBottom: "0.3rem" }}>{item.icon}</span>
+                      <span style={{ fontSize: "0.7rem", fontWeight: selectedSector === item.id ? 600 : 400, color: selectedSector === item.id ? "#22C55E" : "rgba(240,237,230,0.45)", lineHeight: 1.3, fontFamily: "'DM Sans', sans-serif" }}>
                         {item.label}
                       </span>
                     </motion.button>
                   ))}
                 </div>
               </div>
+
+              {/* Sub-Role Refinement Field */}
+              <AnimatePresence initial={false}>
+                {selectedSector && activeSectorData && (
+                  <motion.div
+                    initial={{ opacity: 0, height: 0 }}
+                    animate={{ opacity: 1, height: "auto" }}
+                    exit={{ opacity: 0, height: 0 }}
+                    transition={{ duration: 0.2 }}
+                    style={{ marginBottom: "1.5rem", overflow: "hidden" }}
+                  >
+                    <label style={{ display: "flex", alignItems: "center", gap: 6, fontSize: "0.65rem", fontWeight: 700, letterSpacing: "0.2em", textTransform: "uppercase", color: "rgba(240,237,230,0.3)", marginBottom: "0.6rem" }}>
+                      🎯 Precision Niche
+                    </label>
+                    <div style={{ position: "relative" }}>
+                      <select
+                        value={specificRole}
+                        onChange={(e) => setSpecificRole(e.target.value)}
+                        style={{
+                          width: "100%", padding: "0.85rem 1rem",
+                          background: "#131613",
+                          border: "1px solid rgba(34,197,94,0.3)",
+                          borderRadius: 10, color: "#F0EDE6",
+                          fontSize: "0.875rem", fontFamily: "'DM Sans', sans-serif",
+                          outline: "none", appearance: "none", cursor: "pointer"
+                        }}
+                      >
+                        <option value="" disabled style={{ background: "#0d0f0d" }}>-- Select your micro-role --</option>
+                        {activeSectorData.roles.map((subRole) => (
+                          <option key={subRole} value={subRole} style={{ background: "#0d0f0d" }}>
+                            {subRole}
+                          </option>
+                        ))}
+                      </select>
+                      <span style={{ position: "absolute", right: 16, top: "50%", transform: "translateY(-50%)", color: "rgba(240,237,230,0.3)", pointerEvents: "none", fontSize: "0.8rem" }}>▼</span>
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
  
-              {/* Location */}
+              {/* Location Input */}
               <div style={{ marginBottom: "2rem" }}>
                 <label style={{ display: "flex", alignItems: "center", gap: 6, fontSize: "0.65rem", fontWeight: 700, letterSpacing: "0.2em", textTransform: "uppercase", color: "rgba(240,237,230,0.3)", marginBottom: "0.85rem" }}>
                   <MapPin size={11} style={{ color: "#22C55E" }} />
@@ -140,39 +252,41 @@ function OnboardingModal({
                     fontSize: "0.875rem", fontFamily: "'DM Sans', sans-serif",
                     outline: "none", transition: "border-color 0.2s",
                   }}
-                  onFocus={e => e.target.style.borderColor = "rgba(34,197,94,0.45)"}
-                  onBlur={e => e.target.style.borderColor = "rgba(255,255,255,0.08)"}
+                  onFocus={e => { e.target.style.borderColor = "rgba(34,197,94,0.45)"; }}
+                  onBlur={e => { e.target.style.borderColor = "rgba(255,255,255,0.08)"; }}
                 />
               </div>
  
               {/* Footer */}
               <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
                 <button
+                  type="button"
                   onClick={onClose}
                   style={{ fontSize: "0.72rem", fontWeight: 600, letterSpacing: "0.15em", textTransform: "uppercase", color: "rgba(240,237,230,0.25)", background: "none", border: "none", cursor: "pointer", transition: "color 0.2s" }}
-                  onMouseEnter={e => (e.currentTarget.style.color = "rgba(240,237,230,0.55)")}
-                  onMouseLeave={e => (e.currentTarget.style.color = "rgba(240,237,230,0.25)")}
+                  onMouseEnter={e => { e.currentTarget.style.color = "rgba(240,237,230,0.55)"; }}
+                  onMouseLeave={e => { e.currentTarget.style.color = "rgba(240,237,230,0.25)"; }}
                 >
                   Skip for now
                 </button>
  
                 <motion.button
-                  whileHover={role ? { scale: 1.03, boxShadow: "0 0 28px rgba(34,197,94,0.3)" } : {}}
-                  whileTap={role ? { scale: 0.97 } : {}}
-                  onClick={() => role && onSubmit({ role, location })}
+                  whileHover={specificRole ? { scale: 1.03, boxShadow: "0 0 28px rgba(34,197,94,0.3)" } : {}}
+                  whileTap={specificRole ? { scale: 0.97 } : {}}
+                  onClick={handleFormSubmit}
+                  disabled={!specificRole}
                   style={{
                     display: "flex", alignItems: "center", gap: "0.5rem",
                     padding: "0.85rem 1.75rem",
-                    background: role ? "linear-gradient(135deg, #22C55E, #16A34A)" : "rgba(255,255,255,0.06)",
-                    color: role ? "#080808" : "rgba(240,237,230,0.2)",
+                    background: specificRole ? "linear-gradient(135deg, #22C55E, #16A34A)" : "rgba(255,255,255,0.06)",
+                    color: specificRole ? "#080808" : "rgba(240,237,230,0.2)",
                     border: "none", borderRadius: 10,
                     fontFamily: "'DM Sans', sans-serif", fontWeight: 600,
                     fontSize: "0.8rem", letterSpacing: "0.06em", textTransform: "uppercase",
-                    cursor: role ? "pointer" : "not-allowed",
+                    cursor: specificRole ? "pointer" : "not-allowed",
                     transition: "background 0.2s, color 0.2s",
                   }}
                 >
-                  <Zap size={14} fill={role ? "currentColor" : "none"} />
+                  <Zap size={14} fill={specificRole ? "currentColor" : "none"} />
                   Search Network
                 </motion.button>
               </div>
@@ -183,7 +297,7 @@ function OnboardingModal({
     </AnimatePresence>
   );
 }
- 
+
 // ─── INPUT FIELD ─────────────────────────────────────────────────────────────
  
 interface InputFieldProps {
@@ -246,6 +360,16 @@ function Orb({ style }: { style: React.CSSProperties }) {
   return <div style={{ position: "absolute", borderRadius: "50%", filter: "blur(80px)", pointerEvents: "none", ...style }} />;
 }
  
+// ─── APPLE ICON ──────────────────────────────────────────────────────────────
+ 
+function AppleIcon() {
+  return (
+    <svg width="17" height="17" viewBox="0 0 814 1000" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+      <path d="M788.1 340.9c-5.8 4.5-108.2 62.2-108.2 190.5 0 148.4 130.3 200.9 134.2 202.2-.6 3.2-20.7 71.9-68.7 141.9-42.8 61.6-87.5 123.1-155.5 123.1s-85.5-39.5-164-39.5c-76 0-103.7 40.8-165.9 40.8s-105.6-57.8-155.5-127.4C46 790.7 0 663 0 541.8c0-194.3 126.4-297.5 250.8-297.5 66.1 0 121.2 43.4 162.7 43.4 39.5 0 101.1-46 176.3-46 28.5 0 130.9 2.6 198.3 99.2zm-234-181.5c31.1-36.9 53.1-88.1 53.1-139.3 0-7.1-.6-14.3-1.9-20.1-50.6 1.9-110.8 33.7-147.1 75.8-28.5 32.4-55.1 83.6-55.1 135.5 0 7.8 1.3 15.6 1.9 18.1 3.2.6 8.4 1.3 13.6 1.3 45.4 0 102.5-30.4 135.5-71.3z"/>
+    </svg>
+  );
+}
+ 
 // ─── SIGNUP PAGE ─────────────────────────────────────────────────────────────
  
 export default function SignUp() {
@@ -265,27 +389,42 @@ export default function SignUp() {
     setTimeout(() => {
       setLoading(false);
       setDone(true);
-      // Small delay so the success flash shows before modal opens
       setTimeout(() => setShowOnboarding(true), 600);
     }, 1600);
   };
  
   const handleOnboardingSubmit = ({ role, location }: { role: string; location: string }) => {
     console.log("Profile:", { ...form, role, location });
-    // Save to backend here
     setShowOnboarding(false);
-    router.push("/matches"); // ← goes to matches page
+    router.push("/Matches");
   };
  
-// Replace handleOnboardingClose:
-const handleOnboardingClose = () => {
+  const handleOnboardingClose = () => {
     setShowOnboarding(false);
-    router.push("/dashboard"); // ← skip goes to dashboard
+    router.push("/Dashboard");
+  };
+ 
+  // Shared style for OAuth buttons
+  const oauthButtonStyle: React.CSSProperties = {
+    flex: 1,
+    padding: "0.85rem",
+    background: "rgba(255,255,255,0.05)",
+    border: "1px solid rgba(255,255,255,0.1)",
+    borderRadius: 10,
+    color: "#F0EDE6",
+    fontFamily: "'DM Sans', sans-serif",
+    fontWeight: 400,
+    fontSize: "0.9rem",
+    cursor: "pointer",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: "0.65rem",
+    transition: "background 0.2s, border-color 0.2s",
   };
  
   return (
     <>
-      {/* ── ONBOARDING MODAL (portal-style, rendered above everything) ── */}
       <OnboardingModal
         isOpen={showOnboarding}
         onClose={handleOnboardingClose}
@@ -425,7 +564,6 @@ const handleOnboardingClose = () => {
                   <p style={{ fontSize: "0.9rem", color: "rgba(240,237,230,0.45)", fontWeight: 300, lineHeight: 1.7 }}>
                     Setting up your profile…
                   </p>
-                  {/* Subtle loading bar */}
                   <div style={{ marginTop: "1.5rem", height: 2, background: "rgba(255,255,255,0.06)", borderRadius: 2, overflow: "hidden", maxWidth: 200, margin: "1.5rem auto 0" }}>
                     <motion.div
                       initial={{ width: "0%" }}
@@ -438,7 +576,7 @@ const handleOnboardingClose = () => {
               )}
             </AnimatePresence>
  
-            {/* ── FORM (single step now) ── */}
+            {/* ── FORM ── */}
             {!done && (
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
@@ -453,29 +591,33 @@ const handleOnboardingClose = () => {
                   <a href="/login" style={{ color: "#22C55E", textDecoration: "none", fontWeight: 400 }}>Sign in</a>
                 </p>
  
-                {/* Google OAuth */}
-                <button
-                  style={{
-                    width: "100%", padding: "0.85rem",
-                    background: "rgba(255,255,255,0.05)",
-                    border: "1px solid rgba(255,255,255,0.1)",
-                    borderRadius: 10, color: "#F0EDE6",
-                    fontFamily: "'DM Sans', sans-serif", fontWeight: 400,
-                    fontSize: "0.9rem", cursor: "pointer",
-                    display: "flex", alignItems: "center", justifyContent: "center", gap: "0.75rem",
-                    marginBottom: "1.75rem", transition: "background 0.2s, border-color 0.2s",
-                  }}
-                  onMouseEnter={e => { e.currentTarget.style.background = "rgba(255,255,255,0.08)"; e.currentTarget.style.borderColor = "rgba(255,255,255,0.18)"; }}
-                  onMouseLeave={e => { e.currentTarget.style.background = "rgba(255,255,255,0.05)"; e.currentTarget.style.borderColor = "rgba(255,255,255,0.1)"; }}
-                >
-                  <svg width="18" height="18" viewBox="0 0 24 24">
-                    <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
-                    <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
-                    <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z" fill="#FBBC05"/>
-                    <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
-                  </svg>
-                  Continue with Google
-                </button>
+                {/* ── OAuth row ── */}
+                <div style={{ display: "flex", gap: "0.75rem", marginBottom: "1.75rem" }}>
+                  <button
+                    type="button"
+                    style={oauthButtonStyle}
+                    onMouseEnter={e => { e.currentTarget.style.background = "rgba(255,255,255,0.08)"; e.currentTarget.style.borderColor = "rgba(255,255,255,0.18)"; }}
+                    onMouseLeave={e => { e.currentTarget.style.background = "rgba(255,255,255,0.05)"; e.currentTarget.style.borderColor = "rgba(255,255,255,0.1)"; }}
+                  >
+                    <svg width="17" height="17" viewBox="0 0 24 24">
+                      <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
+                      <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
+                      <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z" fill="#FBBC05"/>
+                      <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
+                    </svg>
+                    Google
+                  </button>
+ 
+                  <button
+                    type="button"
+                    style={oauthButtonStyle}
+                    onMouseEnter={e => { e.currentTarget.style.background = "rgba(255,255,255,0.08)"; e.currentTarget.style.borderColor = "rgba(255,255,255,0.18)"; }}
+                    onMouseLeave={e => { e.currentTarget.style.background = "rgba(255,255,255,0.05)"; e.currentTarget.style.borderColor = "rgba(255,255,255,0.1)"; }}
+                  >
+                    <AppleIcon />
+                    Apple
+                  </button>
+                </div>
  
                 <div style={{ display: "flex", alignItems: "center", gap: "1rem", marginBottom: "1.75rem" }}>
                   <div style={{ flex: 1, height: 1, background: "rgba(255,255,255,0.07)" }} />
@@ -486,36 +628,28 @@ const handleOnboardingClose = () => {
                 <InputField label="Full Name" placeholder="e.g. Tunde Ayo" icon="👤" value={form.name} onChange={update("name")} />
                 <InputField label="Email Address" type="email" placeholder="you@example.com" icon="✉️" value={form.email} onChange={update("email")} />
                 <InputField label="Password" type="password" placeholder="Min. 8 characters" icon="🔒" value={form.password} onChange={update("password")} />
- 
+
                 <motion.button
-                  whileHover={{ scale: 1.02, boxShadow: "0 0 30px rgba(34,197,94,0.25)" }}
+                  whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
                   onClick={handleSubmit}
                   disabled={loading}
                   style={{
-                    width: "100%", marginTop: "0.5rem", padding: "0.95rem",
+                    width: "100%", padding: "1rem", marginTop: "1.5rem",
                     background: "linear-gradient(135deg, #22C55E, #16A34A)",
                     color: "#080808", border: "none", borderRadius: 10,
-                    fontFamily: "'DM Sans', sans-serif", fontWeight: 500,
-                    fontSize: "0.95rem", cursor: loading ? "not-allowed" : "pointer",
-                    display: "flex", alignItems: "center", justifyContent: "center", gap: "0.5rem",
-                    opacity: loading ? 0.8 : 1,
+                    fontFamily: "'DM Sans', sans-serif", fontWeight: 600,
+                    fontSize: "0.9rem", letterSpacing: "0.05em", textTransform: "uppercase",
+                    cursor: loading ? "not-allowed" : "pointer", display: "flex",
+                    alignItems: "center", justifyContent: "center", gap: "0.5rem",
                   }}
                 >
                   {loading ? (
-                    <>
-                      <div style={{ width: 16, height: 16, border: "2px solid rgba(8,8,8,0.3)", borderTopColor: "#080808", borderRadius: "50%", animation: "spin 0.7s linear infinite" }} />
-                      Creating account…
-                    </>
-                  ) : "Join NaijaCollab 🚀"}
+                    <span style={{ display: "inline-block", width: 16, height: 16, border: "2px solid #080808", borderTopColor: "transparent", borderRadius: "50%", animation: "spin 0.8s linear infinite" }} />
+                  ) : (
+                    "Create Account"
+                  )}
                 </motion.button>
- 
-                <p style={{ marginTop: "1.25rem", fontSize: "0.75rem", color: "rgba(240,237,230,0.2)", textAlign: "center", lineHeight: 1.6 }}>
-                  By signing up you agree to our{" "}
-                  <a href="#" style={{ color: "rgba(240,237,230,0.4)", textDecoration: "none" }}>Terms</a>{" "}
-                  and{" "}
-                  <a href="#" style={{ color: "rgba(240,237,230,0.4)", textDecoration: "none" }}>Privacy Policy</a>
-                </p>
               </motion.div>
             )}
           </div>
@@ -524,4 +658,3 @@ const handleOnboardingClose = () => {
     </>
   );
 }
- 

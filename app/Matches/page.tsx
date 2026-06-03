@@ -1,6 +1,6 @@
 "use client";
  
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Search, SlidersHorizontal, MapPin, Zap, Star,
@@ -8,7 +8,54 @@ import {
   Music, Code, Palette, Camera, Video, Cpu, Check
 } from "lucide-react";
  
-// ─── TYPES ───────────────────────────────────────────────────────────────────
+// ─── DESIGN TOKENS ───────────────────────────────────────────────────────────
+// Centralised so every component reads from the same source
+ 
+const T = {
+  // Typography
+  fontSans: "'DM Sans', sans-serif",
+  fontDisplay: "'Syne', sans-serif",
+ 
+  // Text colours
+  textPrimary: "#F0EDE6",
+  textMuted: "rgba(240,237,230,0.45)",
+  textFaint: "rgba(240,237,230,0.28)",
+ 
+  // Surface colours
+  surfaceBase: "#080808",
+  surfaceCard: "rgba(255,255,255,0.025)",
+  surfaceCardHover: "rgba(255,255,255,0.04)",
+  surfaceInput: "rgba(255,255,255,0.04)",
+ 
+  // Border colours
+  borderDefault: "rgba(255,255,255,0.08)",
+  borderSubtle: "rgba(255,255,255,0.05)",
+  borderActive: "rgba(34,197,94,0.45)",
+ 
+  // Brand
+  green: "#22C55E",
+  greenDim: "rgba(34,197,94,0.12)",
+  greenBorder: "rgba(34,197,94,0.3)",
+  greenGlow: "rgba(34,197,94,0.08)",
+ 
+  // Radii
+  radiusSm: 8,
+  radiusMd: 10,
+  radiusLg: 14,
+  radiusXl: 18,
+  radiusPill: 100,
+ 
+  // Spacing scale
+  gap4: "0.25rem",
+  gap6: "0.375rem",
+  gap8: "0.5rem",
+  gap12: "0.75rem",
+  gap16: "1rem",
+  gap20: "1.25rem",
+  gap24: "1.5rem",
+};
+ 
+// ─── TYPES ──────────────────────────────────────────────────────────────────
  
 interface Creative {
   id: number;
@@ -26,98 +73,129 @@ interface Creative {
   online: boolean;
 }
  
-// ─── DATA ────────────────────────────────────────────────────────────────────
+// ─── DATA ───────────────────────────────────────────────────────────────────
  
 const ALL_CREATIVES: Creative[] = [
   {
     id: 1, name: "Tunde Adeyemi", initials: "TA", role: "Sound Producer",
-    roleIcon: <Music size={12} />, location: "Lagos, NG",
+    roleIcon: <Music size={11} />, location: "Lagos, NG",
     tags: ["Afrobeats", "Mixing", "Pro Tools"],
-    matchScore: 98, accentColor: "#22C55E", bio: "Award-winning producer behind 3 charting Afrobeats records. Looking for vocalists and lyricists ready to go big.",
+    matchScore: 98, accentColor: "#22C55E",
+    bio: "Award-winning producer behind 3 charting Afrobeats records. Looking for vocalists and lyricists ready to go big.",
     collab: 14, rating: 4.9, online: true,
   },
   {
     id: 2, name: "Chisom Obi", initials: "CO", role: "UI/UX Designer",
-    roleIcon: <Palette size={12} />, location: "Abuja, NG",
+    roleIcon: <Palette size={11} />, location: "Abuja, NG",
     tags: ["Figma", "Motion", "Branding"],
-    matchScore: 94, accentColor: "#EAB308", bio: "Design lead at a Lagos startup. Obsessed with interfaces that feel alive. Let's build something people actually love.",
+    matchScore: 94, accentColor: "#EAB308",
+    bio: "Design lead at a Lagos startup. Obsessed with interfaces that feel alive. Let's build something people actually love.",
     collab: 9, rating: 4.8, online: true,
   },
   {
     id: 3, name: "Emeka Nwosu", initials: "EN", role: "Full-Stack Dev",
-    roleIcon: <Code size={12} />, location: "Port Harcourt, NG",
+    roleIcon: <Code size={11} />, location: "Port Harcourt, NG",
     tags: ["React", "Node.js", "Web3"],
-    matchScore: 91, accentColor: "#3B82F6", bio: "Building the infrastructure for the next wave of Nigerian tech. Need a designer or product thinker to partner with.",
+    matchScore: 91, accentColor: "#3B82F6",
+    bio: "Building the infrastructure for the next wave of Nigerian tech. Need a designer or product thinker to partner with.",
     collab: 22, rating: 4.7, online: false,
   },
   {
-    id: 4, name: "Amara Sule", initials: "AS", role: "Photographer",
-    roleIcon: <Camera size={12} />, location: "Lagos, NG",
-    tags: ["Editorial", "Portraiture", "Brand"],
-    matchScore: 88, accentColor: "#EC4899", bio: "Visual storyteller. Shot campaigns for 12+ Nigerian brands. Looking for creative directors and stylists to collaborate with.",
-    collab: 31, rating: 5.0, online: true,
-  },
-  {
-    id: 5, name: "Seun Balogun", initials: "SB", role: "Videographer",
-    roleIcon: <Video size={12} />, location: "Ibadan, NG",
+    id: 4, name: "Seun Balogun", initials: "SB", role: "Videographer",
+    roleIcon: <Video size={11} />, location: "Ibadan, NG",
     tags: ["Cinematography", "Color Grading", "Docs"],
-    matchScore: 85, accentColor: "#F97316", bio: "Director of photography for short films and music videos. Currently building a documentary series on Nigerian youth culture.",
+    matchScore: 85, accentColor: "#F97316",
+    bio: "Director of photography for short films and music videos. Currently building a documentary series on Nigerian youth culture.",
     collab: 7, rating: 4.6, online: false,
   },
   {
-    id: 6, name: "Funke Adesanya", initials: "FA", role: "Visual Artist",
-    roleIcon: <Sparkles size={12} />, location: "Remote",
-    tags: ["Digital Art", "NFT", "Illustration"],
-    matchScore: 82, accentColor: "#A855F7", bio: "Digital artist and illustrator. My work has been featured in 4 international exhibitions. Let's create something that outlasts us.",
-    collab: 18, rating: 4.8, online: true,
-  },
-  {
-    id: 7, name: "Dayo Okonkwo", initials: "DO", role: "Sound Producer",
-    roleIcon: <Music size={12} />, location: "Lagos, NG",
+    id: 5, name: "Dayo Okonkwo", initials: "DO", role: "Sound Producer",
+    roleIcon: <Music size={11} />, location: "Lagos, NG",
     tags: ["Amapiano", "Sampling", "Ableton"],
-    matchScore: 79, accentColor: "#22C55E", bio: "Amapiano specialist. Released 2 EPs independently. Currently looking for vocalists and visual artists for my next project.",
+    matchScore: 79, accentColor: "#22C55E",
+    bio: "Amapiano specialist. Released 2 EPs independently. Currently looking for vocalists and visual artists for my next project.",
     collab: 5, rating: 4.5, online: true,
   },
   {
-    id: 8, name: "Ngozi Eze", initials: "NE", role: "Full-Stack Dev",
-    roleIcon: <Code size={12} />, location: "Enugu, NG",
+    id: 6, name: "Ngozi Eze", initials: "NE", role: "Full-Stack Dev",
+    roleIcon: <Code size={11} />, location: "Enugu, NG",
     tags: ["Python", "AI/ML", "Product"],
-    matchScore: 76, accentColor: "#3B82F6", bio: "AI engineer and product thinker. Building tools for African creatives. Looking for designers and storytellers.",
+    matchScore: 76, accentColor: "#3B82F6",
+    bio: "AI engineer and product thinker. Building tools for African creatives. Looking for designers and storytellers.",
     collab: 11, rating: 4.7, online: false,
-  },
-  {
-    id: 9, name: "Ike Martins", initials: "IM", role: "UI/UX Designer",
-    roleIcon: <Palette size={12} />, location: "Remote",
-    tags: ["Product Design", "Systems", "Framer"],
-    matchScore: 73, accentColor: "#EAB308", bio: "Systems thinker and product designer. 5 years experience across fintech and creative tools. Remote-first.",
-    collab: 16, rating: 4.9, online: true,
-  },
+  }
 ];
  
 const ROLE_FILTERS = [
-  { label: "All", icon: <Sparkles size={13} /> },
-  { label: "Producer", icon: <Music size={13} /> },
-  { label: "Designer", icon: <Palette size={13} /> },
-  { label: "Developer", icon: <Code size={13} /> },
-  { label: "Photographer", icon: <Camera size={13} /> },
-  { label: "Videographer", icon: <Video size={13} /> },
-  { label: "Artist", icon: <Cpu size={13} /> },
+  { label: "All",          icon: <Sparkles size={12} /> },
+  { label: "Producer",     icon: <Music size={12} /> },
+  { label: "Designer",     icon: <Palette size={12} /> },
+  { label: "Developer",    icon: <Code size={12} /> },
+  { label: "Photographer", icon: <Camera size={12} /> },
+  { label: "Videographer", icon: <Video size={12} /> },
+  { label: "Artist",       icon: <Cpu size={12} /> },
 ];
  
-// ─── ORB ─────────────────────────────────────────────────────────────────────
+// ─── SHARED PRIMITIVES ──────────────────────────────────────────────────────
+ 
+/** Pill badge: role tag, filter button, location chip — same shape everywhere */
+function Pill({
+  children, active = false, accent, onClick, style,
+}: {
+  children: React.ReactNode;
+  active?: boolean;
+  accent?: string;
+  onClick?: () => void;
+  style?: React.CSSProperties;
+}) {
+  const activeColor = accent ?? T.green;
+  return (
+    <button
+      onClick={onClick}
+      style={{
+        display: "inline-flex", alignItems: "center", gap: 5,
+        padding: "4px 10px",
+        background: active ? `${activeColor}12` : "rgba(255,255,255,0.04)",
+        border: `1px solid ${active ? `${activeColor}40` : T.borderDefault}`,
+        borderRadius: T.radiusPill,
+        color: active ? activeColor : T.textMuted,
+        fontFamily: T.fontSans, fontSize: "0.72rem", fontWeight: active ? 500 : 400,
+        cursor: onClick ? "pointer" : "default",
+        whiteSpace: "nowrap",
+        transition: "all 0.18s",
+        ...(style ?? {}),
+      }}
+    >
+      {children}
+    </button>
+  );
+}
+ 
+/** Divider used inside stat rows */
+function Divider() {
+  return <div style={{ width: 1, height: 12, background: T.borderSubtle, flexShrink: 0 }} />;
+}
+ 
+/** Online dot — one consistent component used everywhere */
+function OnlineDot({ size = 8 }: { size?: number }) {
+  return (
+    <span style={{
+      display: "inline-block",
+      width: size, height: size, borderRadius: "50%",
+      background: T.green, boxShadow: `0 0 ${size}px ${T.green}`,
+      flexShrink: 0,
+    }} />
+  );
+}
  
 function Orb({ style }: { style: React.CSSProperties }) {
   return <div style={{ position: "absolute", borderRadius: "50%", filter: "blur(90px)", pointerEvents: "none", ...style }} />;
 }
  
-// ─── MATCH CARD ──────────────────────────────────────────────────────────────
+// ─── MATCH CARD ────────────────────────────────────────────────────────────
  
 function MatchCard({
-  creative,
-  index,
-  onConnect,
-  onMessage,
-  connected,
+  creative, index, onConnect, onMessage, connected,
 }: {
   creative: Creative;
   index: number;
@@ -129,171 +207,173 @@ function MatchCard({
  
   return (
     <motion.div
-      initial={{ opacity: 0, y: 28 }}
+      initial={{ opacity: 0, y: 24 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ delay: index * 0.07, duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
+      transition={{ delay: index * 0.06, duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
       style={{
         position: "relative",
-        background: hovered ? "rgba(255,255,255,0.04)" : "rgba(255,255,255,0.025)",
-        border: `1px solid ${hovered ? `${creative.accentColor}30` : "rgba(255,255,255,0.07)"}`,
-        borderRadius: 18,
-        padding: "1.5rem",
+        background: hovered ? T.surfaceCardHover : T.surfaceCard,
+        border: `1px solid ${hovered ? `${creative.accentColor}28` : T.borderDefault}`,
+        borderRadius: T.radiusXl,
+        padding: T.gap24,
         cursor: "default",
-        transition: "background 0.25s, border-color 0.25s, transform 0.25s",
+        transition: "background 0.22s, border-color 0.22s, transform 0.22s",
         transform: hovered ? "translateY(-3px)" : "translateY(0)",
         overflow: "hidden",
+        display: "flex", flexDirection: "column", gap: T.gap16,
       }}
     >
-      {/* Top glow on hover */}
+      {/* Top edge glow */}
       <div style={{
-        position: "absolute", top: 0, left: "20%", right: "20%", height: 1,
-        background: `linear-gradient(90deg, transparent, ${creative.accentColor}60, transparent)`,
-        opacity: hovered ? 1 : 0, transition: "opacity 0.3s",
+        position: "absolute", top: 0, left: "15%", right: "15%", height: 1,
+        background: `linear-gradient(90deg, transparent, ${creative.accentColor}55, transparent)`,
+        opacity: hovered ? 1 : 0, transition: "opacity 0.25s",
+        pointerEvents: "none",
       }} />
  
-      {/* Match score badge */}
-      <div style={{
-        position: "absolute", top: 14, right: 14,
-        display: "flex", alignItems: "center", gap: 4,
-        background: `${creative.accentColor}15`,
-        border: `1px solid ${creative.accentColor}30`,
-        borderRadius: 100, padding: "3px 10px",
-      }}>
-        <Zap size={10} fill={creative.accentColor} color={creative.accentColor} />
-        <span style={{ fontSize: "0.68rem", fontWeight: 700, color: creative.accentColor, letterSpacing: "0.04em" }}>
-          {creative.matchScore}% match
-        </span>
-      </div>
- 
-      {/* Avatar row */}
-      <div style={{ display: "flex", alignItems: "flex-start", gap: "0.85rem", marginBottom: "1rem" }}>
+      {/* ── HEADER ROW ── */}
+      <div style={{ display: "flex", alignItems: "flex-start", gap: T.gap12 }}>
+        {/* Avatar */}
         <div style={{ position: "relative", flexShrink: 0 }}>
           <div style={{
-            width: 48, height: 48, borderRadius: "50%",
-            background: `linear-gradient(135deg, ${creative.accentColor}40, ${creative.accentColor}15)`,
-            border: `1.5px solid ${creative.accentColor}40`,
+            width: 46, height: 46, borderRadius: "50%",
+            background: `${creative.accentColor}22`,
+            border: `1.5px solid ${creative.accentColor}38`,
             display: "flex", alignItems: "center", justifyContent: "center",
-            fontFamily: "'Syne', sans-serif", fontWeight: 800,
-            fontSize: "0.85rem", color: creative.accentColor,
+            fontFamily: T.fontDisplay, fontWeight: 800,
+            fontSize: "0.82rem", color: creative.accentColor,
           }}>
             {creative.initials}
           </div>
-          {/* Online dot */}
           {creative.online && (
             <div style={{
               position: "absolute", bottom: 1, right: 1,
-              width: 10, height: 10, borderRadius: "50%",
-              background: "#22C55E", border: "2px solid #080808",
-              boxShadow: "0 0 6px #22C55E",
-            }} />
+              padding: 2, borderRadius: "50%", background: T.surfaceBase,
+            }}>
+              <OnlineDot size={8} />
+            </div>
           )}
         </div>
  
-        <div style={{ flex: 1, paddingRight: "4rem" }}>
-          <div style={{ fontFamily: "'Syne', sans-serif", fontWeight: 700, fontSize: "0.95rem", color: "#F0EDE6", letterSpacing: "-0.02em", marginBottom: "0.2rem" }}>
+        {/* Name + meta */}
+        <div style={{ flex: 1, minWidth: 0 }}>
+          <p style={{
+            fontFamily: T.fontDisplay, fontWeight: 700,
+            fontSize: "0.92rem", color: T.textPrimary,
+            letterSpacing: "-0.02em", marginBottom: 5,
+            whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis",
+          }}>
             {creative.name}
+          </p>
+          <div style={{ display: "flex", alignItems: "center", gap: 6, flexWrap: "wrap" }}>
+            {/* Role pill */}
+            <Pill active accent={creative.accentColor}>
+              <span style={{ display: "flex" }}>{creative.roleIcon}</span>
+              {creative.role}
+            </Pill>
+            {/* Location */}
+            <span style={{ display: "flex", alignItems: "center", gap: 3, fontSize: "0.72rem", color: T.textFaint }}>
+              <MapPin size={10} />
+              {creative.location}
+            </span>
           </div>
-          <div style={{ display: "flex", alignItems: "center", gap: "0.4rem", flexWrap: "wrap" }}>
-            <div style={{
-              display: "inline-flex", alignItems: "center", gap: 4,
-              background: `${creative.accentColor}12`,
-              border: `1px solid ${creative.accentColor}25`,
-              borderRadius: 6, padding: "2px 8px",
-            }}>
-              <span style={{ color: creative.accentColor, display: "flex" }}>{creative.roleIcon}</span>
-              <span style={{ fontSize: "0.72rem", fontWeight: 500, color: creative.accentColor }}>{creative.role}</span>
-            </div>
-            <div style={{ display: "flex", alignItems: "center", gap: 3 }}>
-              <MapPin size={10} style={{ color: "rgba(240,237,230,0.3)" }} />
-              <span style={{ fontSize: "0.72rem", color: "rgba(240,237,230,0.35)", fontWeight: 300 }}>{creative.location}</span>
-            </div>
-          </div>
+        </div>
+ 
+        {/* Match score badge */}
+        <div style={{
+          display: "flex", alignItems: "center", gap: 4, flexShrink: 0,
+          background: `${creative.accentColor}12`,
+          border: `1px solid ${creative.accentColor}30`,
+          borderRadius: T.radiusPill, padding: "3px 9px",
+        }}>
+          <Zap size={9} fill={creative.accentColor} color={creative.accentColor} />
+          <span style={{ fontSize: "0.68rem", fontWeight: 700, color: creative.accentColor, letterSpacing: "0.04em" }}>
+            {creative.matchScore}%
+          </span>
         </div>
       </div>
  
-      {/* Bio */}
+      {/* ── BIO ── */}
       <p style={{
-        fontSize: "0.82rem", color: "rgba(240,237,230,0.5)",
+        fontSize: "0.82rem", color: T.textMuted,
         fontWeight: 300, lineHeight: 1.65,
-        marginBottom: "1rem",
-        display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden",
+        display: "-webkit-box", WebkitLineClamp: 2,
+        WebkitBoxOrient: "vertical", overflow: "hidden",
+        margin: 0,
       }}>
         {creative.bio}
       </p>
  
-      {/* Tags */}
-      <div style={{ display: "flex", flexWrap: "wrap", gap: "0.4rem", marginBottom: "1.25rem" }}>
+      {/* ── TAGS ── */}
+      <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
         {creative.tags.map((tag) => (
-          <span key={tag} style={{
-            fontSize: "0.7rem", fontWeight: 400,
-            color: "rgba(240,237,230,0.4)",
-            background: "rgba(255,255,255,0.04)",
-            border: "1px solid rgba(255,255,255,0.07)",
-            borderRadius: 6, padding: "2px 8px",
-          }}>{tag}</span>
+          <Pill key={tag}>{tag}</Pill>
         ))}
       </div>
  
-      {/* Stats row */}
-      <div style={{ display: "flex", alignItems: "center", gap: "1rem", marginBottom: "1.25rem", paddingBottom: "1.25rem", borderBottom: "1px solid rgba(255,255,255,0.05)" }}>
-        <div style={{ display: "flex", alignItems: "center", gap: 4 }}>
+      {/* ── STATS ROW ── */}
+      <div style={{
+        display: "flex", alignItems: "center", gap: T.gap12,
+        paddingBottom: T.gap16,
+        borderBottom: `1px solid ${T.borderSubtle}`,
+      }}>
+        <span style={{ display: "flex", alignItems: "center", gap: 4, fontSize: "0.75rem" }}>
           <Star size={11} fill="#EAB308" color="#EAB308" />
-          <span style={{ fontSize: "0.75rem", fontWeight: 600, color: "#F0EDE6" }}>{creative.rating}</span>
-        </div>
-        <div style={{ width: 1, height: 12, background: "rgba(255,255,255,0.08)" }} />
-        <span style={{ fontSize: "0.73rem", color: "rgba(240,237,230,0.35)", fontWeight: 300 }}>
+          <span style={{ fontWeight: 600, color: T.textPrimary }}>{creative.rating}</span>
+        </span>
+        <Divider />
+        <span style={{ fontSize: "0.73rem", color: T.textMuted, fontWeight: 300 }}>
           <strong style={{ color: "rgba(240,237,230,0.7)", fontWeight: 600 }}>{creative.collab}</strong> collabs
         </span>
         {creative.online && (
           <>
-            <div style={{ width: 1, height: 12, background: "rgba(255,255,255,0.08)" }} />
-            <span style={{ fontSize: "0.72rem", color: "#22C55E", fontWeight: 400, display: "flex", alignItems: "center", gap: 3 }}>
-              <span style={{ width: 5, height: 5, borderRadius: "50%", background: "#22C55E", display: "inline-block" }} />
+            <Divider />
+            <span style={{ display: "flex", alignItems: "center", gap: 5, fontSize: "0.72rem", color: T.green }}>
+              <OnlineDot size={6} />
               Online now
             </span>
           </>
         )}
       </div>
  
-      {/* Actions */}
-      <div style={{ display: "flex", gap: "0.6rem" }}>
+      {/* ── ACTIONS ── */}
+      <div style={{ display: "flex", gap: T.gap8 }}>
         <motion.button
-          whileHover={{ scale: 1.03 }}
-          whileTap={{ scale: 0.96 }}
+          whileHover={{ scale: 1.02 }}
+          whileTap={{ scale: 0.97 }}
           onClick={() => onMessage(creative)}
           style={{
             flex: 1, display: "flex", alignItems: "center", justifyContent: "center", gap: 6,
-            padding: "0.65rem",
+            padding: "0.6rem 0",
             background: "rgba(255,255,255,0.04)",
-            border: "1px solid rgba(255,255,255,0.09)",
-            borderRadius: 10, color: "rgba(240,237,230,0.6)",
-            fontFamily: "'DM Sans', sans-serif", fontSize: "0.78rem", fontWeight: 400,
-            cursor: "pointer", transition: "background 0.2s, border-color 0.2s, color 0.2s",
+            border: `1px solid ${T.borderDefault}`,
+            borderRadius: T.radiusMd,
+            color: T.textMuted,
+            fontFamily: T.fontSans, fontSize: "0.78rem", fontWeight: 400,
+            cursor: "pointer", transition: "background 0.18s, border-color 0.18s, color 0.18s",
           }}
-          onMouseEnter={e => { e.currentTarget.style.background = "rgba(255,255,255,0.07)"; e.currentTarget.style.color = "#F0EDE6"; }}
-          onMouseLeave={e => { e.currentTarget.style.background = "rgba(255,255,255,0.04)"; e.currentTarget.style.color = "rgba(240,237,230,0.6)"; }}
+          onMouseEnter={e => { e.currentTarget.style.background = "rgba(255,255,255,0.07)"; e.currentTarget.style.color = T.textPrimary; e.currentTarget.style.borderColor = "rgba(255,255,255,0.14)"; }}
+          onMouseLeave={e => { e.currentTarget.style.background = "rgba(255,255,255,0.04)"; e.currentTarget.style.color = T.textMuted; e.currentTarget.style.borderColor = T.borderDefault; }}
         >
           <MessageCircle size={13} /> Message
         </motion.button>
  
         <motion.button
-          whileHover={!connected ? { scale: 1.03, boxShadow: `0 0 20px ${creative.accentColor}30` } : {}}
-          whileTap={!connected ? { scale: 0.96 } : {}}
+          whileHover={!connected ? { scale: 1.02, boxShadow: `0 0 20px ${creative.accentColor}28` } : {}}
+          whileTap={!connected ? { scale: 0.97 } : {}}
           onClick={() => !connected && onConnect(creative.id)}
           style={{
             flex: 1, display: "flex", alignItems: "center", justifyContent: "center", gap: 6,
-            padding: "0.65rem",
-            background: connected
-              ? "rgba(34,197,94,0.1)"
-              : `linear-gradient(135deg, ${creative.accentColor}, ${creative.accentColor}cc)`,
-            border: connected ? "1px solid rgba(34,197,94,0.3)" : "none",
-            borderRadius: 10,
-            color: connected ? "#22C55E" : "#080808",
-            fontFamily: "'DM Sans', sans-serif", fontSize: "0.78rem", fontWeight: connected ? 400 : 600,
+            padding: "0.6rem 0",
+            background: connected ? `${T.green}14` : `linear-gradient(135deg, ${creative.accentColor}, ${creative.accentColor}cc)`,
+            border: connected ? `1px solid ${T.greenBorder}` : "1px solid transparent",
+            borderRadius: T.radiusMd,
+            color: connected ? T.green : "#080808",
+            fontFamily: T.fontSans, fontSize: "0.78rem", fontWeight: connected ? 400 : 600,
             cursor: connected ? "default" : "pointer",
-            transition: "all 0.25s",
+            transition: "all 0.22s",
           }}
         >
           {connected ? <><Check size={13} /> Connected</> : <><UserPlus size={13} /> Connect</>}
@@ -303,15 +383,9 @@ function MatchCard({
   );
 }
  
-// ─── MESSAGE DRAWER ───────────────────────────────────────────────────────────
+// ─── MESSAGE DRAWER ──────────────────────────────────────────────────────────
  
-function MessageDrawer({
-  creative,
-  onClose,
-}: {
-  creative: Creative | null;
-  onClose: () => void;
-}) {
+function MessageDrawer({ creative, onClose }: { creative: Creative | null; onClose: () => void }) {
   const [msg, setMsg] = useState("");
   const [sent, setSent] = useState(false);
  
@@ -326,125 +400,123 @@ function MessageDrawer({
       {creative && (
         <>
           <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
+            initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
             onClick={onClose}
-            style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.6)", backdropFilter: "blur(6px)", zIndex: 80 }}
+            style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.55)", backdropFilter: "blur(6px)", zIndex: 80 }}
           />
           <motion.div
-            initial={{ x: "100%" }}
-            animate={{ x: 0 }}
-            exit={{ x: "100%" }}
+            initial={{ x: "100%" }} animate={{ x: 0 }} exit={{ x: "100%" }}
             transition={{ type: "spring", stiffness: 320, damping: 32 }}
             style={{
               position: "fixed", top: 0, right: 0, bottom: 0, zIndex: 90,
               width: 380, background: "#0d0d0d",
-              borderLeft: "1px solid rgba(255,255,255,0.07)",
+              borderLeft: `1px solid ${T.borderDefault}`,
               display: "flex", flexDirection: "column",
             }}
           >
-            {/* Drawer header */}
-            <div style={{ padding: "1.5rem", borderBottom: "1px solid rgba(255,255,255,0.06)", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-              <div style={{ display: "flex", alignItems: "center", gap: "0.75rem" }}>
+            {/* Header */}
+            <div style={{ padding: T.gap24, borderBottom: `1px solid ${T.borderSubtle}`, display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+              <div style={{ display: "flex", alignItems: "center", gap: T.gap12 }}>
                 <div style={{
                   width: 40, height: 40, borderRadius: "50%",
-                  background: `linear-gradient(135deg, ${creative.accentColor}40, ${creative.accentColor}15)`,
-                  border: `1.5px solid ${creative.accentColor}40`,
+                  background: `${creative.accentColor}22`, border: `1.5px solid ${creative.accentColor}38`,
                   display: "flex", alignItems: "center", justifyContent: "center",
-                  fontFamily: "'Syne', sans-serif", fontWeight: 800,
-                  fontSize: "0.78rem", color: creative.accentColor,
+                  fontFamily: T.fontDisplay, fontWeight: 800, fontSize: "0.75rem", color: creative.accentColor,
                 }}>
                   {creative.initials}
                 </div>
                 <div>
-                  <div style={{ fontFamily: "'Syne', sans-serif", fontWeight: 700, fontSize: "0.9rem", color: "#F0EDE6" }}>{creative.name}</div>
-                  <div style={{ fontSize: "0.72rem", color: "rgba(240,237,230,0.35)", fontWeight: 300 }}>{creative.role} · {creative.location}</div>
+                  <p style={{ fontFamily: T.fontDisplay, fontWeight: 700, fontSize: "0.88rem", color: T.textPrimary, margin: 0 }}>{creative.name}</p>
+                  <p style={{ fontSize: "0.72rem", color: T.textFaint, fontWeight: 300, margin: 0 }}>{creative.role} · {creative.location}</p>
                 </div>
               </div>
-              <button onClick={onClose} style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.08)", borderRadius: "50%", width: 32, height: 32, display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", color: "rgba(240,237,230,0.4)" }}>
-                <X size={16} />
+              <button
+                onClick={onClose}
+                style={{
+                  width: 32, height: 32, borderRadius: "50%",
+                  background: "rgba(255,255,255,0.04)", border: `1px solid ${T.borderDefault}`,
+                  display: "flex", alignItems: "center", justifyContent: "center",
+                  cursor: "pointer", color: T.textMuted, transition: "background 0.18s",
+                }}
+                onMouseEnter={e => { e.currentTarget.style.background = "rgba(255,255,255,0.08)"; e.currentTarget.style.color = T.textPrimary; }}
+                onMouseLeave={e => { e.currentTarget.style.background = "rgba(255,255,255,0.04)"; e.currentTarget.style.color = T.textMuted; }}
+              >
+                <X size={15} />
               </button>
             </div>
  
-            {/* Chat area */}
-            <div style={{ flex: 1, padding: "1.5rem", display: "flex", flexDirection: "column", justifyContent: "flex-end", gap: "0.85rem" }}>
-              {/* Starter prompts */}
-              <div style={{ marginBottom: "0.5rem" }}>
-                <p style={{ fontSize: "0.72rem", color: "rgba(240,237,230,0.25)", letterSpacing: "0.1em", textTransform: "uppercase", marginBottom: "0.75rem", fontWeight: 500 }}>Quick starters</p>
-                <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
-                  {[
-                    `Hey ${creative.name.split(" ")[0]}, I'd love to collab!`,
-                    `Your work is amazing. Are you open to a project?`,
-                    `I have an idea I think you'd be perfect for.`,
-                  ].map((starter, i) => (
-                    <button
-                      key={i}
-                      onClick={() => setMsg(starter)}
-                      style={{
-                        textAlign: "left", padding: "0.6rem 0.85rem",
-                        background: "rgba(255,255,255,0.03)",
-                        border: "1px solid rgba(255,255,255,0.07)",
-                        borderRadius: 8, color: "rgba(240,237,230,0.5)",
-                        fontFamily: "'DM Sans', sans-serif", fontSize: "0.8rem", fontWeight: 300,
-                        cursor: "pointer", transition: "background 0.2s, color 0.2s",
-                      }}
-                      onMouseEnter={e => { e.currentTarget.style.background = "rgba(255,255,255,0.06)"; e.currentTarget.style.color = "#F0EDE6"; }}
-                      onMouseLeave={e => { e.currentTarget.style.background = "rgba(255,255,255,0.03)"; e.currentTarget.style.color = "rgba(240,237,230,0.5)"; }}
-                    >
-                      {starter}
-                    </button>
-                  ))}
-                </div>
+            {/* Body */}
+            <div style={{ flex: 1, padding: T.gap24, display: "flex", flexDirection: "column", justifyContent: "flex-end" }}>
+              <p style={{ fontSize: "0.68rem", fontWeight: 600, letterSpacing: "0.14em", textTransform: "uppercase", color: T.textFaint, marginBottom: T.gap12 }}>
+                Quick starters
+              </p>
+              <div style={{ display: "flex", flexDirection: "column", gap: T.gap8 }}>
+                {[
+                  `Hey ${creative.name.split(" ")[0]}, I'd love to collab!`,
+                  `Your work is amazing. Are you open to a project?`,
+                  `I have an idea I think you'd be perfect for.`,
+                ].map((starter, i) => (
+                  <button
+                    key={i}
+                    onClick={() => setMsg(starter)}
+                    style={{
+                      textAlign: "left", padding: "0.6rem 0.85rem",
+                      background: T.surfaceInput, border: `1px solid ${T.borderDefault}`,
+                      borderRadius: T.radiusMd, color: T.textMuted,
+                      fontFamily: T.fontSans, fontSize: "0.8rem", fontWeight: 300,
+                      cursor: "pointer", transition: "background 0.18s, color 0.18s, border-color 0.18s",
+                    }}
+                    onMouseEnter={e => { e.currentTarget.style.background = "rgba(255,255,255,0.07)"; e.currentTarget.style.color = T.textPrimary; e.currentTarget.style.borderColor = "rgba(255,255,255,0.14)"; }}
+                    onMouseLeave={e => { e.currentTarget.style.background = T.surfaceInput; e.currentTarget.style.color = T.textMuted; e.currentTarget.style.borderColor = T.borderDefault; }}
+                  >
+                    {starter}
+                  </button>
+                ))}
               </div>
             </div>
  
             {/* Input */}
-            <div style={{ padding: "1rem 1.5rem 1.5rem", borderTop: "1px solid rgba(255,255,255,0.06)" }}>
+            <div style={{ padding: `${T.gap16} ${T.gap24} ${T.gap24}`, borderTop: `1px solid ${T.borderSubtle}` }}>
               <AnimatePresence mode="wait">
                 {sent ? (
                   <motion.div
                     key="sent"
-                    initial={{ opacity: 0, y: 8 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0 }}
-                    style={{ textAlign: "center", padding: "1rem", color: "#22C55E", fontSize: "0.85rem", display: "flex", alignItems: "center", justifyContent: "center", gap: 6 }}
+                    initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}
+                    style={{ textAlign: "center", padding: T.gap16, color: T.green, fontSize: "0.85rem", display: "flex", alignItems: "center", justifyContent: "center", gap: 6 }}
                   >
-                    <Check size={16} /> Message sent!
+                    <Check size={15} /> Message sent!
                   </motion.div>
                 ) : (
-                  <motion.div key="input" style={{ display: "flex", gap: "0.6rem" }}>
+                  <motion.div key="input" style={{ display: "flex", gap: T.gap8 }}>
                     <input
                       value={msg}
                       onChange={e => setMsg(e.target.value)}
                       onKeyDown={e => e.key === "Enter" && handleSend()}
                       placeholder={`Message ${creative.name.split(" ")[0]}…`}
                       style={{
-                        flex: 1, padding: "0.75rem 1rem",
-                        background: "rgba(255,255,255,0.04)",
-                        border: "1px solid rgba(255,255,255,0.09)",
-                        borderRadius: 10, color: "#F0EDE6",
-                        fontFamily: "'DM Sans', sans-serif", fontSize: "0.85rem",
-                        outline: "none",
+                        flex: 1, padding: "0.72rem 0.9rem",
+                        background: T.surfaceInput, border: `1px solid ${T.borderDefault}`,
+                        borderRadius: T.radiusMd, color: T.textPrimary,
+                        fontFamily: T.fontSans, fontSize: "0.85rem", outline: "none",
+                        transition: "border-color 0.18s",
                       }}
-                      onFocus={e => e.target.style.borderColor = "rgba(34,197,94,0.4)"}
-                      onBlur={e => e.target.style.borderColor = "rgba(255,255,255,0.09)"}
+                      onFocus={e => e.target.style.borderColor = T.borderActive}
+                      onBlur={e => e.target.style.borderColor = T.borderDefault}
                     />
                     <motion.button
-                      whileHover={{ scale: 1.05 }}
+                      whileHover={{ scale: 1.04 }}
                       whileTap={{ scale: 0.95 }}
                       onClick={handleSend}
                       style={{
-                        width: 44, height: 44, borderRadius: 10,
-                        background: msg.trim() ? "linear-gradient(135deg, #22C55E, #16A34A)" : "rgba(255,255,255,0.05)",
+                        width: 42, height: 42, borderRadius: T.radiusMd, flexShrink: 0,
+                        background: msg.trim() ? `linear-gradient(135deg, ${T.green}, #16A34A)` : "rgba(255,255,255,0.05)",
                         border: "none", cursor: msg.trim() ? "pointer" : "not-allowed",
                         display: "flex", alignItems: "center", justifyContent: "center",
                         color: msg.trim() ? "#080808" : "rgba(240,237,230,0.2)",
                         transition: "background 0.2s",
-                        flexShrink: 0,
                       }}
                     >
-                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                         <line x1="22" y1="2" x2="11" y2="13" /><polygon points="22 2 15 22 11 13 2 9 22 2" />
                       </svg>
                     </motion.button>
@@ -459,7 +531,7 @@ function MessageDrawer({
   );
 }
  
-// ─── MAIN PAGE ────────────────────────────────────────────────────────────────
+// ─── MAIN PAGE ────────────────────────────────────────────-──────────────────
  
 export default function MatchesPage() {
   const [search, setSearch] = useState("");
@@ -476,11 +548,9 @@ export default function MatchesPage() {
  
   const filtered = ALL_CREATIVES
     .filter(c => {
-      const matchesSearch = c.name.toLowerCase().includes(search.toLowerCase()) ||
-        c.role.toLowerCase().includes(search.toLowerCase()) ||
-        c.tags.some(t => t.toLowerCase().includes(search.toLowerCase()));
-      const matchesRole = activeFilter === "All" ||
-        c.role.toLowerCase().includes(activeFilter.toLowerCase());
+      const q = search.toLowerCase();
+      const matchesSearch = c.name.toLowerCase().includes(q) || c.role.toLowerCase().includes(q) || c.tags.some(t => t.toLowerCase().includes(q));
+      const matchesRole = activeFilter === "All" || c.role.toLowerCase().includes(activeFilter.toLowerCase());
       const matchesLocation = locationFilter === "All" || c.location === locationFilter;
       return matchesSearch && matchesRole && matchesLocation;
     })
@@ -492,15 +562,8 @@ export default function MatchesPage() {
       return 0;
     });
  
-  const handleConnect = (id: number) => {
-    setConnectedIds(prev => [...prev, id]);
-  };
- 
   return (
-    <div style={{
-      minHeight: "100vh", background: "#080808", color: "#F0EDE6",
-      fontFamily: "'DM Sans', sans-serif", position: "relative",
-    }}>
+    <div style={{ minHeight: "100vh", background: T.surfaceBase, color: T.textPrimary, fontFamily: T.fontSans, position: "relative" }}>
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@300;400;500;600&display=swap');
         * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -509,17 +572,16 @@ export default function MatchesPage() {
         ::-webkit-scrollbar-track { background: transparent; }
         ::-webkit-scrollbar-thumb { background: rgba(34,197,94,0.2); border-radius: 2px; }
         @keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-10px)} }
-        @keyframes pulse { 0%,100%{opacity:0.6} 50%{opacity:1} }
       `}</style>
  
       {/* Background orbs */}
-      <Orb style={{ width: 500, height: 500, background: "radial-gradient(circle, rgba(34,197,94,0.08), transparent)", top: -100, left: -100 }} />
-      <Orb style={{ width: 400, height: 400, background: "radial-gradient(circle, rgba(234,179,8,0.05), transparent)", bottom: "20%", right: -100, animation: "float 8s ease-in-out infinite" }} />
+      <Orb style={{ width: 500, height: 500, background: "radial-gradient(circle, rgba(34,197,94,0.07), transparent)", top: -100, left: -100 }} />
+      <Orb style={{ width: 380, height: 380, background: "radial-gradient(circle, rgba(234,179,8,0.05), transparent)", bottom: "20%", right: -80, animation: "float 8s ease-in-out infinite" }} />
  
       {/* Grid texture */}
       <div style={{
         position: "fixed", inset: 0, pointerEvents: "none", zIndex: 0,
-        backgroundImage: "linear-gradient(rgba(255,255,255,0.018) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.018) 1px, transparent 1px)",
+        backgroundImage: "linear-gradient(rgba(255,255,255,0.016) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.016) 1px, transparent 1px)",
         backgroundSize: "60px 60px",
       }} />
  
@@ -527,69 +589,83 @@ export default function MatchesPage() {
       <nav style={{
         position: "sticky", top: 0, zIndex: 50,
         display: "flex", alignItems: "center", justifyContent: "space-between",
-        padding: "1rem 2.5rem",
-        background: "rgba(8,8,8,0.9)", backdropFilter: "blur(20px)",
-        borderBottom: "1px solid rgba(255,255,255,0.05)",
+        padding: "0.9rem 2.5rem",
+        background: "rgba(8,8,8,0.88)", backdropFilter: "blur(20px)",
+        borderBottom: `1px solid ${T.borderSubtle}`,
       }}>
         <a href="/" style={{ textDecoration: "none" }}>
-          <span style={{ fontFamily: "'Syne', sans-serif", fontWeight: 800, fontSize: "1.2rem", letterSpacing: "-0.03em", color: "#F0EDE6" }}>
-            Naija<span style={{ color: "#22C55E" }}>Collab</span>
+          <span style={{ fontFamily: T.fontDisplay, fontWeight: 800, fontSize: "1.2rem", letterSpacing: "-0.03em", color: T.textPrimary }}>
+            Naija<span style={{ color: T.green }}>Collab</span>
           </span>
         </a>
  
-        <div style={{ display: "flex", gap: "0.4rem", background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.07)", borderRadius: 10, padding: "0.3rem" }}>
-          {["Matches", "Projects", "Messages", "Profile"].map((item) => (
-            <a key={item} href={`/${item.toLowerCase()}`} style={{
-              padding: "0.45rem 1rem", borderRadius: 8, fontSize: "0.8rem", fontWeight: 400,
-              color: item === "Matches" ? "#080808" : "rgba(240,237,230,0.45)",
-              background: item === "Matches" ? "#22C55E" : "transparent",
-              textDecoration: "none", transition: "all 0.2s",
-            }}
-              onMouseEnter={e => { if (item !== "Matches") e.currentTarget.style.color = "#F0EDE6"; }}
-              onMouseLeave={e => { if (item !== "Matches") e.currentTarget.style.color = "rgba(240,237,230,0.45)"; }}
-            >{item}</a>
-          ))}
+        {/* Nav tabs */}
+        <div style={{ display: "flex", gap: 2, background: "rgba(255,255,255,0.03)", border: `1px solid ${T.borderDefault}`, borderRadius: T.radiusLg, padding: 3 }}>
+          {["Matches", "Projects", "Messages", "Profile"].map((item) => {
+            const isActive = item === "Matches";
+            return (
+              <a
+                key={item}
+                href={`/${item.toLowerCase()}`}
+                style={{
+                  padding: "0.42rem 0.95rem", borderRadius: T.radiusMd,
+                  fontSize: "0.78rem", fontWeight: isActive ? 500 : 400,
+                  color: isActive ? "#080808" : T.textMuted,
+                  background: isActive ? T.green : "transparent",
+                  textDecoration: "none", transition: "all 0.18s",
+                }}
+                onMouseEnter={e => { if (!isActive) e.currentTarget.style.color = T.textPrimary; }}
+                onMouseLeave={e => { if (!isActive) e.currentTarget.style.color = T.textMuted; }}
+              >
+                {item}
+              </a>
+            );
+          })}
         </div>
  
-        <div style={{ display: "flex", alignItems: "center", gap: "0.6rem" }}>
-          <div style={{ width: 34, height: 34, borderRadius: "50%", background: "linear-gradient(135deg, #22C55E40, #22C55E15)", border: "1.5px solid #22C55E40", display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "'Syne', sans-serif", fontWeight: 800, fontSize: "0.7rem", color: "#22C55E" }}>
-            YOU
-          </div>
+        {/* Avatar */}
+        <div style={{
+          width: 34, height: 34, borderRadius: "50%",
+          background: `${T.green}22`, border: `1.5px solid ${T.green}38`,
+          display: "flex", alignItems: "center", justifyContent: "center",
+          fontFamily: T.fontDisplay, fontWeight: 800, fontSize: "0.68rem", color: T.green,
+        }}>
+          YOU
         </div>
       </nav>
  
-      {/* ── MAIN CONTENT ── */}
+      {/* ── MAIN ── */}
       <div style={{ position: "relative", zIndex: 1, maxWidth: 1200, margin: "0 auto", padding: "2.5rem 2rem" }}>
  
         {/* Page header */}
-        <div style={{ marginBottom: "2.5rem" }}>
-          <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: "0.6rem" }}>
-            <Zap size={14} fill="#22C55E" color="#22C55E" />
-            <span style={{ fontSize: "0.7rem", fontWeight: 600, letterSpacing: "0.18em", textTransform: "uppercase", color: "#22C55E" }}>
-              {filtered.length} Matches Found
+        <div style={{ marginBottom: "2rem" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: "0.5rem" }}>
+            <Zap size={13} fill={T.green} color={T.green} />
+            <span style={{ fontSize: "0.68rem", fontWeight: 600, letterSpacing: "0.18em", textTransform: "uppercase", color: T.green }}>
+              {filtered.length} matches found
             </span>
           </div>
-          <h1 style={{ fontFamily: "'Syne', sans-serif", fontWeight: 800, fontSize: "clamp(1.75rem, 3vw, 2.5rem)", letterSpacing: "-0.04em", color: "#F0EDE6", marginBottom: "0.4rem" }}>
+          <h1 style={{ fontFamily: T.fontDisplay, fontWeight: 800, fontSize: "clamp(1.75rem, 3vw, 2.5rem)", letterSpacing: "-0.04em", color: T.textPrimary, marginBottom: "0.35rem" }}>
             Your Creative Matches
           </h1>
-          <p style={{ fontSize: "0.875rem", color: "rgba(240,237,230,0.4)", fontWeight: 300 }}>
+          <p style={{ fontSize: "0.875rem", color: T.textMuted, fontWeight: 300 }}>
             Ranked by compatibility with your profile and goals.
           </p>
         </div>
  
-        {/* ── SEARCH + FILTERS BAR ── */}
-        <div style={{ marginBottom: "1.75rem", display: "flex", flexDirection: "column", gap: "1rem" }}>
+        {/* ── SEARCH + FILTERS ── */}
+        <div style={{ marginBottom: "1.75rem", display: "flex", flexDirection: "column", gap: T.gap12 }}>
  
           {/* Search row */}
-          <div style={{ display: "flex", gap: "0.75rem", alignItems: "center" }}>
+          <div style={{ display: "flex", gap: T.gap12 }}>
             <div style={{
               flex: 1, position: "relative",
-              border: `1px solid ${searchFocused ? "rgba(34,197,94,0.45)" : "rgba(255,255,255,0.08)"}`,
-              borderRadius: 12, background: "rgba(255,255,255,0.03)",
+              border: `1px solid ${searchFocused ? T.borderActive : T.borderDefault}`,
+              borderRadius: T.radiusLg, background: T.surfaceInput,
               transition: "border-color 0.2s",
-              boxShadow: searchFocused ? "0 0 0 3px rgba(34,197,94,0.07)" : "none",
+              boxShadow: searchFocused ? `0 0 0 3px ${T.greenGlow}` : "none",
             }}>
-              <Search size={15} style={{ position: "absolute", left: 14, top: "50%", transform: "translateY(-50%)", color: "rgba(240,237,230,0.3)" }} />
+              <Search size={14} style={{ position: "absolute", left: 13, top: "50%", transform: "translateY(-50%)", color: T.textFaint }} />
               <input
                 value={search}
                 onChange={e => setSearch(e.target.value)}
@@ -597,62 +673,48 @@ export default function MatchesPage() {
                 onBlur={() => setSearchFocused(false)}
                 placeholder="Search by name, role, or skill…"
                 style={{
-                  width: "100%", padding: "0.8rem 1rem 0.8rem 2.75rem",
+                  width: "100%", padding: "0.75rem 1rem 0.75rem 2.6rem",
                   background: "transparent", border: "none", outline: "none",
-                  color: "#F0EDE6", fontFamily: "'DM Sans', sans-serif", fontSize: "0.875rem",
+                  color: T.textPrimary, fontFamily: T.fontSans, fontSize: "0.875rem",
                 }}
               />
               {search && (
-                <button onClick={() => setSearch("")} style={{ position: "absolute", right: 12, top: "50%", transform: "translateY(-50%)", background: "none", border: "none", cursor: "pointer", color: "rgba(240,237,230,0.3)", display: "flex" }}>
-                  <X size={14} />
+                <button onClick={() => setSearch("")} style={{ position: "absolute", right: 11, top: "50%", transform: "translateY(-50%)", background: "none", border: "none", cursor: "pointer", color: T.textFaint, display: "flex", padding: 2 }}>
+                  <X size={13} />
                 </button>
               )}
             </div>
  
-            {/* Filter toggle */}
+            {/* Filter toggle — same radius/padding as role pills but rectangular */}
             <motion.button
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.97 }}
+              whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.97 }}
               onClick={() => setShowFilters(!showFilters)}
               style={{
-                display: "flex", alignItems: "center", gap: "0.5rem",
-                padding: "0.8rem 1.25rem",
-                background: showFilters ? "rgba(34,197,94,0.12)" : "rgba(255,255,255,0.04)",
-                border: `1px solid ${showFilters ? "rgba(34,197,94,0.4)" : "rgba(255,255,255,0.08)"}`,
-                borderRadius: 12, color: showFilters ? "#22C55E" : "rgba(240,237,230,0.6)",
-                fontFamily: "'DM Sans', sans-serif", fontSize: "0.82rem", fontWeight: 400,
-                cursor: "pointer", transition: "all 0.2s", whiteSpace: "nowrap",
+                display: "flex", alignItems: "center", gap: 6,
+                padding: "0 1.1rem",
+                background: showFilters ? T.greenDim : T.surfaceInput,
+                border: `1px solid ${showFilters ? T.borderActive : T.borderDefault}`,
+                borderRadius: T.radiusLg,
+                color: showFilters ? T.green : T.textMuted,
+                fontFamily: T.fontSans, fontSize: "0.8rem", fontWeight: showFilters ? 500 : 400,
+                cursor: "pointer", transition: "all 0.18s", whiteSpace: "nowrap",
               }}
             >
-              <SlidersHorizontal size={14} />
+              <SlidersHorizontal size={13} />
               Filters
               <ChevronDown size={12} style={{ transform: showFilters ? "rotate(180deg)" : "rotate(0)", transition: "transform 0.2s" }} />
             </motion.button>
           </div>
  
-          {/* Role filters */}
-          <div style={{ display: "flex", gap: "0.5rem", flexWrap: "wrap" }}>
+          {/* Role filters — pills */}
+          <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
             {ROLE_FILTERS.map((f) => (
-              <motion.button
-                key={f.label}
-                whileHover={{ scale: 1.03 }}
-                whileTap={{ scale: 0.97 }}
-                onClick={() => setActiveFilter(f.label)}
-                style={{
-                  display: "flex", alignItems: "center", gap: "0.4rem",
-                  padding: "0.5rem 1rem",
-                  background: activeFilter === f.label ? "rgba(34,197,94,0.12)" : "rgba(255,255,255,0.03)",
-                  border: `1px solid ${activeFilter === f.label ? "rgba(34,197,94,0.45)" : "rgba(255,255,255,0.07)"}`,
-                  borderRadius: 100, cursor: "pointer",
-                  color: activeFilter === f.label ? "#22C55E" : "rgba(240,237,230,0.45)",
-                  fontFamily: "'DM Sans', sans-serif", fontSize: "0.78rem",
-                  fontWeight: activeFilter === f.label ? 500 : 400,
-                  transition: "all 0.2s",
-                }}
-              >
-                <span style={{ display: "flex", color: "inherit" }}>{f.icon}</span>
-                {f.label}
-              </motion.button>
+              <motion.div key={f.label} whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}>
+                <Pill active={activeFilter === f.label} onClick={() => setActiveFilter(f.label)}>
+                  <span style={{ display: "flex" }}>{f.icon}</span>
+                  {f.label}
+                </Pill>
+              </motion.div>
             ))}
           </div>
  
@@ -666,41 +728,25 @@ export default function MatchesPage() {
                 style={{ overflow: "hidden" }}
               >
                 <div style={{
-                  padding: "1.25rem", background: "rgba(255,255,255,0.02)",
-                  border: "1px solid rgba(255,255,255,0.07)", borderRadius: 14,
+                  padding: T.gap20, background: "rgba(255,255,255,0.02)",
+                  border: `1px solid ${T.borderDefault}`, borderRadius: T.radiusLg,
                   display: "flex", gap: "2rem", flexWrap: "wrap",
                 }}>
-                  {/* Location */}
-                  <div>
-                    <p style={{ fontSize: "0.68rem", fontWeight: 600, letterSpacing: "0.15em", textTransform: "uppercase", color: "rgba(240,237,230,0.3)", marginBottom: "0.6rem" }}>Location</p>
-                    <div style={{ display: "flex", gap: "0.4rem", flexWrap: "wrap" }}>
-                      {locations.map(loc => (
-                        <button key={loc} onClick={() => setLocationFilter(loc)} style={{
-                          padding: "0.35rem 0.85rem", borderRadius: 100, fontSize: "0.75rem",
-                          background: locationFilter === loc ? "rgba(34,197,94,0.12)" : "rgba(255,255,255,0.03)",
-                          border: `1px solid ${locationFilter === loc ? "rgba(34,197,94,0.4)" : "rgba(255,255,255,0.07)"}`,
-                          color: locationFilter === loc ? "#22C55E" : "rgba(240,237,230,0.45)",
-                          cursor: "pointer", fontFamily: "'DM Sans', sans-serif", transition: "all 0.2s",
-                        }}>{loc}</button>
-                      ))}
+                  {[
+                    { label: "Location", options: locations, value: locationFilter, set: setLocationFilter },
+                    { label: "Sort by", options: sortOptions, value: sortBy, set: setSortBy },
+                  ].map(({ label, options, value, set }) => (
+                    <div key={label}>
+                      <p style={{ fontSize: "0.66rem", fontWeight: 600, letterSpacing: "0.15em", textTransform: "uppercase", color: T.textFaint, marginBottom: T.gap8 }}>
+                        {label}
+                      </p>
+                      <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
+                        {options.map(opt => (
+                          <Pill key={opt} active={value === opt} onClick={() => set(opt)}>{opt}</Pill>
+                        ))}
+                      </div>
                     </div>
-                  </div>
- 
-                  {/* Sort */}
-                  <div>
-                    <p style={{ fontSize: "0.68rem", fontWeight: 600, letterSpacing: "0.15em", textTransform: "uppercase", color: "rgba(240,237,230,0.3)", marginBottom: "0.6rem" }}>Sort By</p>
-                    <div style={{ display: "flex", gap: "0.4rem", flexWrap: "wrap" }}>
-                      {sortOptions.map(opt => (
-                        <button key={opt} onClick={() => setSortBy(opt)} style={{
-                          padding: "0.35rem 0.85rem", borderRadius: 100, fontSize: "0.75rem",
-                          background: sortBy === opt ? "rgba(34,197,94,0.12)" : "rgba(255,255,255,0.03)",
-                          border: `1px solid ${sortBy === opt ? "rgba(34,197,94,0.4)" : "rgba(255,255,255,0.07)"}`,
-                          color: sortBy === opt ? "#22C55E" : "rgba(240,237,230,0.45)",
-                          cursor: "pointer", fontFamily: "'DM Sans', sans-serif", transition: "all 0.2s",
-                        }}>{opt}</button>
-                      ))}
-                    </div>
-                  </div>
+                  ))}
                 </div>
               </motion.div>
             )}
@@ -712,33 +758,30 @@ export default function MatchesPage() {
           {filtered.length === 0 ? (
             <motion.div
               key="empty"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
+              initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
               style={{ textAlign: "center", padding: "5rem 0" }}
             >
-              <div style={{ fontSize: "3rem", marginBottom: "1rem" }}>🔍</div>
-              <h3 style={{ fontFamily: "'Syne', sans-serif", fontWeight: 700, fontSize: "1.2rem", marginBottom: "0.5rem" }}>No matches found</h3>
-              <p style={{ fontSize: "0.85rem", color: "rgba(240,237,230,0.35)", fontWeight: 300 }}>Try adjusting your filters or search terms</p>
-              <button onClick={() => { setSearch(""); setActiveFilter("All"); setLocationFilter("All"); }} style={{ marginTop: "1.5rem", padding: "0.65rem 1.5rem", background: "rgba(34,197,94,0.1)", border: "1px solid rgba(34,197,94,0.3)", borderRadius: 10, color: "#22C55E", fontFamily: "'DM Sans', sans-serif", fontSize: "0.82rem", cursor: "pointer" }}>
+              <div style={{ fontSize: "2.5rem", marginBottom: T.gap16 }}>🔍</div>
+              <h3 style={{ fontFamily: T.fontDisplay, fontWeight: 700, fontSize: "1.2rem", marginBottom: "0.5rem" }}>No matches found</h3>
+              <p style={{ fontSize: "0.85rem", color: T.textMuted, fontWeight: 300 }}>Try adjusting your filters or search terms</p>
+              <button
+                onClick={() => { setSearch(""); setActiveFilter("All"); setLocationFilter("All"); }}
+                style={{ marginTop: T.gap24, padding: "0.6rem 1.4rem", background: T.greenDim, border: `1px solid ${T.greenBorder}`, borderRadius: T.radiusMd, color: T.green, fontFamily: T.fontSans, fontSize: "0.82rem", cursor: "pointer" }}
+              >
                 Clear filters
               </button>
             </motion.div>
           ) : (
             <motion.div
               key="grid"
-              style={{
-                display: "grid",
-                gridTemplateColumns: "repeat(auto-fill, minmax(320px, 1fr))",
-                gap: "1.25rem",
-              }}
+              style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(320px, 1fr))", gap: T.gap20 }}
             >
               {filtered.map((creative, i) => (
                 <MatchCard
                   key={creative.id}
                   creative={creative}
                   index={i}
-                  onConnect={handleConnect}
+                  onConnect={(id) => setConnectedIds(prev => [...prev, id])}
                   onMessage={setActiveCreative}
                   connected={connectedIds.includes(creative.id)}
                 />
@@ -747,18 +790,17 @@ export default function MatchesPage() {
           )}
         </AnimatePresence>
  
-        {/* Connected count toast */}
+        {/* Connections toast */}
         <AnimatePresence>
           {connectedIds.length > 0 && (
             <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
+              initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }}
               style={{
                 position: "fixed", bottom: "2rem", left: "50%", transform: "translateX(-50%)",
-                display: "flex", alignItems: "center", gap: "0.6rem",
-                background: "#0d0f0d", border: "1px solid rgba(34,197,94,0.3)",
-                borderRadius: 100, padding: "0.6rem 1.25rem",
-                boxShadow: "0 8px 32px rgba(0,0,0,0.5), 0 0 20px rgba(34,197,94,0.1)",
+                display: "flex", alignItems: "center", gap: T.gap12,
+                background: "#0d0f0d", border: `1px solid ${T.greenBorder}`,
+                borderRadius: T.radiusPill, padding: "0.55rem 1.2rem",
+                boxShadow: "0 8px 32px rgba(0,0,0,0.5), 0 0 20px rgba(34,197,94,0.08)",
                 zIndex: 40,
               }}
             >
@@ -768,24 +810,23 @@ export default function MatchesPage() {
                   return (
                     <div key={id} style={{
                       width: 24, height: 24, borderRadius: "50%",
-                      background: `linear-gradient(135deg, ${c.accentColor}50, ${c.accentColor}20)`,
-                      border: `1.5px solid ${c.accentColor}50`,
+                      background: `${c.accentColor}22`, border: `1.5px solid ${c.accentColor}45`,
                       marginLeft: i === 0 ? 0 : -6,
                       display: "flex", alignItems: "center", justifyContent: "center",
-                      fontSize: "0.55rem", fontWeight: 700, color: c.accentColor,
+                      fontSize: "0.52rem", fontWeight: 700, color: c.accentColor,
+                      fontFamily: T.fontDisplay,
                     }}>{c.initials}</div>
                   );
                 })}
               </div>
-              <span style={{ fontSize: "0.78rem", color: "rgba(240,237,230,0.7)", fontWeight: 300 }}>
-                <strong style={{ color: "#22C55E", fontWeight: 600 }}>{connectedIds.length}</strong> connection{connectedIds.length > 1 ? "s" : ""} made
+              <span style={{ fontSize: "0.78rem", color: T.textMuted, fontWeight: 300 }}>
+                <strong style={{ color: T.green, fontWeight: 600 }}>{connectedIds.length}</strong> connection{connectedIds.length > 1 ? "s" : ""} made
               </span>
             </motion.div>
           )}
         </AnimatePresence>
       </div>
  
-      {/* ── MESSAGE DRAWER ── */}
       <MessageDrawer creative={activeCreative} onClose={() => setActiveCreative(null)} />
     </div>
   );

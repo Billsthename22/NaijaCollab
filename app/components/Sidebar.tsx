@@ -19,7 +19,7 @@ import { motion } from "framer-motion";
 
 const primaryNav = [
   { icon: Compass, label: "Feed", href: "/Feed" },
-  { icon: MessageSquare, label: "Messages", href: "/messages", badge: "3" },
+  { icon: MessageSquare, label: "Messages", href: "/Messaging", badge: "3" },
   { icon: Zap, label: "Missions", href: "/dashboard/missions" },
 ];
 
