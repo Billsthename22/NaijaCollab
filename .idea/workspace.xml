@@ -1,0 +1,239 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="a5ef3cef-abcc-4050-8b36-4f4008ed1301" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/naijacollab/backend/config/SecurityConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/naijacollab/backend/config/SecurityConfig.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/naijacollab/backend/security/JwtService.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/naijacollab/backend/security/JwtService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/naijacollab/backend/service/AuthService.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/naijacollab/backend/service/AuthService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/naijacollab/backend/service/IdempotencyService.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/naijacollab/backend/service/IdempotencyService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/resources/application.properties" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="CopilotPersistence">
+    <persistenceIdMap>
+      <entry key="_C:/Users/pc/Documents/NaijaCollab-main" value="3DiPCbEzloPv8Iy1is59h1wOxXi" />
+    </persistenceIdMap>
+  </component>
+  <component name="EmbeddingIndexingInfo">
+    <option name="fileBasedEmbeddingIndicesEnabled" value="true" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;Boluthe&quot;
+  }
+}</component>
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/Billsthename22/NaijaCollab&quot;,
+    &quot;accountId&quot;: &quot;a5801a59-497b-4925-8e2b-0ea439ec9592&quot;
+  }
+}</component>
+  <component name="KubernetesApiPersistence">{}</component>
+  <component name="KubernetesApiProvider">{
+  &quot;isMigrated&quot;: true
+}</component>
+  <component name="MavenImportPreferences">
+    <option name="generalSettings">
+      <MavenGeneralSettings>
+        <option name="mavenHomeTypeForPersistence" value="WRAPPER" />
+      </MavenGeneralSettings>
+    </option>
+  </component>
+  <component name="McpProjectServerCommands">
+    <commands />
+    <urls />
+  </component>
+  <component name="NextEditCompletionFeaturesState">
+    <decayedCancelled>
+      <entry key="MS100" value="1.4394427033444255" />
+      <entry key="MS500" value="3.3341910242012918" />
+      <entry key="S2" value="9.212418669277051" />
+      <entry key="S5" value="17.82205018119378" />
+      <entry key="S10" value="25.94681429969" />
+      <entry key="S30" value="37.65756105211092" />
+      <entry key="S60" value="42.28813989916242" />
+      <entry key="M2" value="44.99151155667458" />
+      <entry key="M5" value="46.75749039459458" />
+      <entry key="M10" value="47.372005231591814" />
+      <entry key="M15" value="47.5798222146144" />
+      <entry key="M30" value="47.7891495485555" />
+      <entry key="H1" value="47.89438358228013" />
+      <entry key="H2" value="47.947143892465185" />
+      <entry key="H4" value="47.973559958955185" />
+      <entry key="D1" value="47.995591660521605" />
+      <entry key="W1" value="47.99937019640411" />
+    </decayedCancelled>
+    <decayedSelected>
+      <entry key="MS100" value="0.0" />
+      <entry key="MS500" value="0.0" />
+      <entry key="S2" value="0.0" />
+      <entry key="S5" value="0.0" />
+      <entry key="S10" value="0.0" />
+      <entry key="S30" value="0.0" />
+      <entry key="S60" value="0.0" />
+      <entry key="M2" value="0.0" />
+      <entry key="M5" value="0.0" />
+      <entry key="M10" value="0.0" />
+      <entry key="M15" value="0.0" />
+      <entry key="M30" value="0.0" />
+      <entry key="H1" value="0.0" />
+      <entry key="H2" value="0.0" />
+      <entry key="H4" value="0.0" />
+      <entry key="D1" value="0.0" />
+      <entry key="W1" value="0.0" />
+    </decayedSelected>
+    <decayedShown>
+      <entry key="MS100" value="1.2672977281413942" />
+      <entry key="MS500" value="3.2517824507011155" />
+      <entry key="S2" value="9.141118307358349" />
+      <entry key="S5" value="17.75344118204159" />
+      <entry key="S10" value="25.885728530144085" />
+      <entry key="S30" value="37.62059287369629" />
+      <entry key="S60" value="42.265980416127796" />
+      <entry key="M2" value="44.97932180114749" />
+      <entry key="M5" value="46.75231925839638" />
+      <entry key="M10" value="47.369367847812754" />
+      <entry key="M15" value="47.57805224292982" />
+      <entry key="M30" value="47.78825865370289" />
+      <entry key="H1" value="47.89393664794645" />
+      <entry key="H2" value="47.9469200523581" />
+      <entry key="H4" value="47.973447945514465" />
+      <entry key="D1" value="47.9955729786314" />
+      <entry key="W1" value="47.99936752724453" />
+    </decayedShown>
+  </component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 8,
+  &quot;fromUser&quot;: false
+}</component>
+  <component name="ProjectId" id="3DiPCbEzloPv8Iy1is59h1wOxXi" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "ModuleVcsDetector.initialDetectionPerformed": "true",
+    "Notification.DisplayName-DoNotAsk-DatabaseConfigFileWatcher.found": "New/updated database configurations found",
+    "Notification.DoNotAsk-DatabaseConfigFileWatcher.found": "true",
+    "RunOnceActivity.MCP Project settings loaded": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "RunOnceActivity.typescript.service.memoryLimit.init": "true",
+    "Spring Boot.BackendApplication.executor": "Run",
+    "ToolWindow.Beans.ShowToolbar": "false",
+    "codeWithMe.voiceChat.enabledByDefault": "false",
+    "com.intellij.ml.llm.matterhorn.ej.ui.settings.DefaultModelSelectionForGA.v1": "true",
+    "git-widget-placeholder": "dev",
+    "ignore.virus.scanning.warn.message": "true",
+    "js.debugger.nextJs.config.created.client": "true",
+    "js.debugger.nextJs.config.created.server": "true",
+    "junie.onboarding.icon.badge.shown": "true",
+    "kotlin-language-version-configured": "true",
+    "last_opened_file_path": "C:/Users/pc/Documents/NaijaCollab-main",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "npm.Next.js: server-side.executor": "Run",
+    "settings.editor.selected.configurable": "preferences.pluginManager",
+    "to.speed.mode.migration.done": "true",
+    "ts.external.directory.path": "C:\\Users\\pc\\Documents\\NaijaCollab-main\\node_modules\\typescript\\lib",
+    "vue.rearranger.settings.migration": "true"
+  },
+  "keyToStringList": {
+    "DatabaseDriversLRU": [
+      "postgresql"
+    ]
+  }
+}]]></component>
+  <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\pc\Documents\NaijaCollab-main\backend\docs" />
+    </key>
+  </component>
+  <component name="RunManager" selected="Spring Boot.BackendApplication">
+    <configuration name="Next.js: debug client-side" type="JavascriptDebugType" uri="http://localhost:3000/">
+      <method v="2" />
+    </configuration>
+    <configuration name="BackendApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
+      <module name="backend" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="com.naijacollab.backend.BackendApplication" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="Next.js: server-side" type="js.build_tools.npm">
+      <package-json value="$PROJECT_DIR$/package.json" />
+      <command value="run" />
+      <scripts>
+        <script value="dev" />
+      </scripts>
+      <node-interpreter value="project" />
+      <envs />
+      <method v="2" />
+    </configuration>
+  </component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-jdk-30f59d01ecdd-37e91769500f-intellij.indexing.shared.core-IU-261.24374.151" />
+        <option value="bundled-js-predefined-d6986cc7102b-31caf2ab9e3c-JavaScript-IU-261.24374.151" />
+      </set>
+    </attachedChunks>
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="a5ef3cef-abcc-4050-8b36-4f4008ed1301" name="Changes" comment="" />
+      <created>1778761791198</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1778761791198</updated>
+      <workItem from="1778761792472" duration="1045000" />
+      <workItem from="1778770550241" duration="608000" />
+      <workItem from="1778775521387" duration="2795000" />
+      <workItem from="1779566232672" duration="9111000" />
+      <workItem from="1779639460881" duration="4503000" />
+      <workItem from="1779818216599" duration="4269000" />
+      <workItem from="1779880710484" duration="1333000" />
+      <workItem from="1779882204731" duration="1044000" />
+      <workItem from="1779883802182" duration="693000" />
+      <workItem from="1779884543161" duration="575000" />
+      <workItem from="1779885179380" duration="818000" />
+      <workItem from="1779913847613" duration="434000" />
+      <workItem from="1779914309524" duration="40000" />
+      <workItem from="1779914378697" duration="738000" />
+      <workItem from="1779915222518" duration="5435000" />
+      <workItem from="1780437535125" duration="239000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="XSLT-Support.FileAssociations.UIState">
+    <expand />
+    <select />
+  </component>
+  <component name="github-copilot-workspace">
+    <instructionFileLocations>
+      <option value=".github/instructions" />
+    </instructionFileLocations>
+    <promptFileLocations>
+      <option value=".github/prompts" />
+    </promptFileLocations>
+  </component>
+</project>
