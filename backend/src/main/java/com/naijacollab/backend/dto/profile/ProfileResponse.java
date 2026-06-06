@@ -1,5 +1,7 @@
 package com.naijacollab.backend.dto.profile;
 
+import java.util.List;
+
 public record ProfileResponse(
         String primaryRole,
         String bio,
@@ -7,5 +9,7 @@ public record ProfileResponse(
         String city,
         String avatarUrl,
         String websiteUrl,
-        boolean onboardingCompleted) {}
+        boolean onboardingCompleted,
+        List<ProfileSkillDto> skills
+) {}
 

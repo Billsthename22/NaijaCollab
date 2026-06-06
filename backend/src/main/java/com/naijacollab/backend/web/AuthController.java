@@ -6,6 +6,8 @@ import com.naijacollab.backend.dto.auth.LoginRequest;
 import com.naijacollab.backend.dto.auth.MeResponse;
 import com.naijacollab.backend.dto.auth.RefreshRequest;
 import com.naijacollab.backend.dto.auth.RegisterRequest;
+import com.naijacollab.backend.dto.auth.ForgotPasswordRequest;
+import com.naijacollab.backend.dto.auth.ResetPasswordRequest;
 import com.naijacollab.backend.security.SecurityPrincipalAccessor;
 import com.naijacollab.backend.service.AuthService;
 import com.naijacollab.backend.service.ClientContext;
@@ -68,6 +70,16 @@ public class AuthController {
         AuthResponse response = authService.login(request, clientContext);
         writeSessionCookies(httpRequest, httpResponse, response);
         return response;
+    }
+
+    @PostMapping("/forgot-password")
+    public void forgotPassword(@Valid @RequestBody ForgotPasswordRequest request) {
+        authService.forgotPassword(request);
+    }
+
+    @PostMapping("/reset-password")
+    public void resetPassword(@Valid @RequestBody ResetPasswordRequest request) {
+        authService.resetPassword(request);
     }
 
     @PostMapping("/refresh")

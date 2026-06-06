@@ -8,9 +8,13 @@ import com.naijacollab.backend.domain.UserEntity;
 import com.naijacollab.backend.domain.UserStatus;
 import com.naijacollab.backend.dto.auth.AuthResponse;
 import com.naijacollab.backend.dto.auth.AuthUserDto;
+import com.naijacollab.backend.dto.auth.ForgotPasswordRequest;
 import com.naijacollab.backend.dto.auth.LoginRequest;
 import com.naijacollab.backend.dto.auth.RegisterRequest;
+import com.naijacollab.backend.dto.auth.ResetPasswordRequest;
+import com.naijacollab.backend.domain.PasswordResetTokenEntity;
 import com.naijacollab.backend.repository.DeviceSessionRepository;
+import com.naijacollab.backend.repository.PasswordResetTokenRepository;
 import com.naijacollab.backend.repository.ProfileRepository;
 import com.naijacollab.backend.repository.RefreshTokenRepository;
 import com.naijacollab.backend.repository.UserRepository;
@@ -19,6 +23,7 @@ import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.SecureRandom;
 import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.Base64;
 import java.util.HexFormat;
 import java.util.List;
@@ -46,6 +51,7 @@ public class AuthService {
     private final ProfileRepository profileRepository;
     private final RefreshTokenRepository refreshTokenRepository;
     private final DeviceSessionRepository deviceSessionRepository;
+    private final PasswordResetTokenRepository passwordResetTokenRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
     private final AppSecurityProperties securityProperties;
@@ -57,6 +63,7 @@ public class AuthService {
             ProfileRepository profileRepository,
             RefreshTokenRepository refreshTokenRepository,
             DeviceSessionRepository deviceSessionRepository,
+            PasswordResetTokenRepository passwordResetTokenRepository,
             PasswordEncoder passwordEncoder,
             JwtService jwtService,
             AppSecurityProperties securityProperties,
@@ -65,6 +72,7 @@ public class AuthService {
         this.profileRepository = profileRepository;
         this.refreshTokenRepository = refreshTokenRepository;
         this.deviceSessionRepository = deviceSessionRepository;
+        this.passwordResetTokenRepository = passwordResetTokenRepository;
         this.passwordEncoder = passwordEncoder;
         this.jwtService = jwtService;
         this.securityProperties = securityProperties;
@@ -239,6 +247,47 @@ public class AuthService {
         }
         deviceSessionRepository.saveAll(activeSessions);
         auditLogService.logEvent(userId, "AUTH_LOGOUT_ALL", "USER", userId.toString());
+    }
+
+    @Transactional
+    public void forgotPassword(ForgotPasswordRequest request) {
+        UserEntity user = userRepository.findByEmailIgnoreCase(request.email().trim()).orElse(null);
+        if (user == null || user.isDeleted() || user.getStatus() != UserStatus.ACTIVE) {
+            // Silently return to prevent email enumeration
+            return;
+        }
+
+        String rawToken = generateRefreshToken(); // reuse secure random string generator
+        PasswordResetTokenEntity resetToken = new PasswordResetTokenEntity();
+        resetToken.setId(UUID.randomUUID());
+        resetToken.setUser(user);
+        resetToken.setTokenHash(hashToken(rawToken));
+        resetToken.setExpiresAt(Instant.now().plus(1, ChronoUnit.HOURS));
+        passwordResetTokenRepository.save(resetToken);
+
+        // TODO: Send email with rawToken
+        auditLogService.logEvent(user.getId(), "PASSWORD_RESET_REQUESTED", "USER", user.getId().toString());
+    }
+
+    @Transactional
+    public void resetPassword(ResetPasswordRequest request) {
+        PasswordResetTokenEntity tokenEntity = passwordResetTokenRepository
+                .findByTokenHash(hashToken(request.token()))
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid or expired token"));
+
+        if (tokenEntity.getUsedAt() != null || tokenEntity.getExpiresAt().isBefore(Instant.now())) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid or expired token");
+        }
+
+        UserEntity user = tokenEntity.getUser();
+        user.setPasswordHash(passwordEncoder.encode(request.newPassword()));
+        userRepository.save(user);
+
+        tokenEntity.setUsedAt(Instant.now());
+        passwordResetTokenRepository.save(tokenEntity);
+
+        logoutAll(user.getId()); // Invalidate all sessions
+        auditLogService.logEvent(user.getId(), "PASSWORD_RESET_COMPLETED", "USER", user.getId().toString());
     }
 
     /**
